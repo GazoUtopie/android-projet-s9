@@ -1,59 +1,109 @@
-# Reste à faire — arbitrages des règles
+# RAF global — The Culling Games
 
-Points relevés dans `Rules-Cards`, la photo initiale des tuiles Wickedness (supprimée du dépôt après transcription) et le livret français Dark Edition. Ce fichier recense des décisions à prendre ; il ne modifie pas les textes sources. Nadir autorise des valeurs et conventions provisoires pour les dégâts afin d'avancer ; leur équilibrage et leurs détails seront revus plus tard.
+Travail restant pour toute l’équipe, sur le périmètre actuel : adaptation de King of Tokyo, un humain et une à trois IA, 20 cartes Énergie personnalisées et tuiles Méchanceté. Architecture retenue : MVVM avec couches View, Business et Data.
 
-## Périmètre et matériel exclu
+État constaté dans le dépôt : squelette Android avec écran « Hello World! », documentation des règles et des cartes. Les tâches ci-dessous restent à réaliser ou à vérifier dans le projet ; aucun développement non constaté n’est considéré comme terminé.
 
-- [x] **Cybercerveau — durée et effet validés par Nadir** : à chacun des tours du propriétaire, pendant toute la partie après acquisition, doubler l’effet d’un dé choisi une fois, sans compter une deuxième face pour les brelans. Aucun dé supplémentaire. Cette précision remplace la limitation précédente au seul tour d’acquisition.
-- [ ] **Cybercerveau — résolution** : préciser le moment du choix (la tuile peut être acquise pendant la résolution des dés), l’effet sur une face chiffrée et le cumul avec Rayon antimatière / Rayon stellaire.
-- [ ] **Catalogue et quantités** : préciser le nombre d'exemplaires de chacune des 20 cartes personnalisées, et le traitement de la pioche épuisée (marché partiel ou recyclage de la défausse). Confirmer si les dix faces rouges de Wickedness constituent tout le catalogue retenu.
-- [ ] **Distribution des cartes** : les sources décrivent un marché d'achat, pas une distribution automatique à chaque tour. Si « cartes de chaque tour » désigne une mécanique différente, la définir.
+Les décisions encore ouvertes sont dans [A_CLARIFIER.md](A_CLARIFIER.md). Les détails des dégâts y disposent de conventions provisoires et ne bloquent pas le développement. La sauvegarde persistante est exclue ; les capacités propres aux personnages sont reportées.
 
-## Durée et fenêtre de jeu
+## Répartition de référence
 
-- [ ] **Veil** : déclaré Action, mais effet continu sans échéance. Définir sa durée et son déclenchement, ou décider explicitement d'un changement de type.
-- [ ] **Black Flash** : préciser s'il agit immédiatement à l'achat sur les dés déjà résolus, ou s'il peut être conservé et joué plus tard. Définir ses cibles : tous les adversaires ou seulement les cibles habituelles des Griffes ; faut-il avoir infligé des dégâts auparavant ?
-- [ ] **Divergent Fist** : préciser si la perte d'Énergie concerne la première blessure ou chaque blessure du prochain tour, si elle touche chaque cible blessée et si les dégâts de cartes comptent. Définir son expiration à la fin du prochain tour même sans blessure.
-- [ ] **Tour de table** pour Inifnity et Special Grade : définir le moment de réinitialisation des compteurs, notamment lors de l'achat et après élimination d'un joueur.
-- [ ] **10 Shadows** : préciser quand transformer le dé, avant verrouillage du résultat final ou à une autre étape, et si « par tour » concerne uniquement le tour du propriétaire.
-- [ ] **Maki's glasses** : préciser la fenêtre d'achat de la carte du dessus ; « à tout moment » peut désigner uniquement sa consultation. Préciser comment rendre l'information connue à l'IA et au joueur sans révéler toute la pioche.
+D’après le README, complété par la précision de Nadir sur son périmètre :
 
-## Calcul des dégâts et interactions — différé, non bloquant
-
-À la demande de Nadir, utiliser provisoirement les nombres déjà présents dans les cartes et les tuiles. Pour les interactions non définies, les conventions arbitraires suivantes permettent d'avancer. Elles ne réécrivent pas les textes des cartes et seront révisables ; les futurs paramètres de dégâts devront être centralisés dans le moteur.
-
-| Sujet | Convention provisoire |
+| Domaine | Référents |
 | --- | --- |
-| Base | Une Griffe inflige 1 dégât par cible légale. Les dégâts finaux sont au minimum de 0. |
-| Bonus | Domain Expension : +1 depuis Tokyo ; Binding Vow : +2. Ces bonus concernent uniquement une attaque de dés avec au moins une Griffe. |
-| Doublement | Cybercerveau double l'effet d'une Griffe choisie ; Rayon antimatière multiplie ensuite les dégâts des Griffes par 2 ; les bonus fixes sont ajoutés après. Aucun doublement ne crée de face pour les brelans. |
-| Défenses | Inifnity annule d'abord l'attaque si activée. Sinon, Veil retire 1 si les dégâts avant réduction sont au moins de 3, puis Special Grade retire 2 si disponible. |
-| Domain Expension | Provisoirement, depuis Tokyo et avec au moins trois faces Griffe finales, l'attaque de dés ignore ces trois protections, y compris Inifnity. |
-| Special Grade | Consommé à sa première réduction d'une attaque positive, même si le résultat devient nul. Une attaque annulée par Inifnity ne le consomme pas. |
-| Dégâts de cartes | Gardent leurs valeurs écrites, sans bonus offensifs de Domain Expension ou Binding Vow ; défenses appliquées par cible. Les coûts et pertes directes de PV ne déclenchent pas ces défenses. |
-| Violet | Depuis Tokyo, répartir 3 dégâts entiers entre les adversaires dehors, au choix ; zéro dégât peut être attribué à une cible. |
-| Nanami's overtime | Provisoirement déclenché si aucune face Griffe n'a été résolue, conformément à la parenthèse du texte. |
-| Fuite | Seulement après des dégâts effectifs de Griffes, conformément au livret. |
+| Design et interface | Yicheng ZHENG et Arthur DRIEUX |
+| Back, Business et Data | Nadir KOUDRI pour le périmètre de développement actuel |
+| Règles et effets des cartes | Yahya Hijazi, avec validation de l’équipe |
+| ViewModels | Équipe front |
+| Intégration et recette | Front et back |
 
-Les points ci-dessous sont conservés pour la révision ultérieure, sans bloquer le développement :
+Pour le plan back, Nadir prend en charge l’ensemble des couches Business et Data ; la répartition initiale du README reste un historique.
 
-- [ ] **Ordre des modificateurs** : définir l'ordre entre Rayon antimatière (double les faces Griffe), bonus de Domain Expension / Binding Vow, seuil de Veil, réduction de Special Grade et annulation d'Inifnity. Préciser si les bonus de dégâts concernent uniquement les Griffes ou aussi les dégâts de cartes, et s'ils exigent au moins une Griffe.
-- [ ] **Domain Expension** : préciser si l'ignorance des protections sur trois Griffes s'applique seulement depuis Tokyo ou partout, si elle bloque Inifnity, et si elle concerne uniquement l'attaque issue des dés.
-- [ ] **Special Grade** : préciser si la réduction se déclenche sur une attaque entièrement annulée, si une attaque réduite à zéro consomme l'utilisation, et si les pertes de PV volontaires ou obligatoires sont concernées.
-- [ ] **Nanami's overtime** : « aucun dégât » et « aucune face Griffe résolue » ne sont pas équivalents : Griffes sans cible, attaque annulée, ou dégâts de cartes sans Griffes. Choisir la condition exacte.
-- [ ] **Violet** : préciser les répartitions autorisées des trois dégâts depuis Tokyo et l'application des protections par cible.
-- [ ] **Blessure ou perte de PV** : distinguer les dégâts de Griffes des dégâts de cartes et des coûts en PV. Le livret ne permet la fuite de Tokyo qu'après blessure par les Griffes ; décider explicitement de toute exception personnalisée.
+## 1. Architecture et contrats — front et back
 
-## Soin et effets simultanés
+- [ ] Organiser les packages View, Business et Data selon MVVM.
+- [ ] Garder le moteur Business indépendant des classes Android ; définir les interfaces de repositories côté Business et leurs implémentations côté Data.
+- [ ] Définir les états exposés au front, les commandes du joueur, les événements de jeu et les erreurs métier.
+- [ ] Définir les choix en attente : dés, ordre de résolution, cibles, tuile, défense, fuite de Tokyo.
+- [ ] Convenir des responsabilités des ViewModels et brancher leur exposition d’état observable.
 
-- [ ] **Binding Vow + Rayon stellaire** : préciser si le soin supplémentaire issu d'une face Cœur est lui aussi interdit. Binding Vow autorise explicitement les cartes mais ne précise pas les tuiles.
-- [ ] **Maximum de PV** : préciser le cumul de Moharaga's adaptation et Régénération totale. Les deux textes fixent un maximum de 12, sans annoncer +2 cumulables ; éviter de coder un maximum de 14 sans décision explicite.
-- [ ] **Début de tour** : définir l'ordre d'Éternel, Infatigable, Sukuna's finger et du bonus de Tokyo. À 1 PV, soigner avant la perte de Sukuna peut changer l'élimination.
-- [ ] **Sournois + Incantation** : Sournois ajoute un lancer ; Incantation accorde une « troisième relance ». Préciser si les effets se cumulent jusqu'à cinq lancers ou si Incantation ne fait qu'autoriser la troisième relance déjà disponible avec Sournois.
+## 2. Business : moteur de base — back
 
-## Tokyo, points et fin de partie
+- [ ] Modéliser partie, joueurs, ressources, dés, positions, cartes, tuiles et phases.
+- [ ] Initialiser une partie de deux à quatre participants, dont un humain et une à trois IA ; déterminer le premier joueur.
+- [ ] Gérer six dés, leur conservation et reprise après chaque lancer, les relances partielles et l’arrêt anticipé ; trois lancers de base, cinq maximum avec Sournois et Incantation (1 Énergie).
+- [ ] Résoudre les chiffres, l’Énergie, les Cœurs et les Griffes, avec ordre de résolution choisi.
+- [ ] Gérer Tokyo City : entrée obligatoire si libre, bonus, attaques et fuite.
+- [ ] Gérer PV maximum, dépenses, élimination et passage au prochain joueur vivant.
+- [ ] Appliquer les effets de début et de fin de tour avec soins prioritaires, puis vérifier les conditions de victoire ; Game Over immédiat à l’élimination humaine.
+- [ ] Valider les commandes selon la phase, les ressources et les choix légaux.
+- [ ] Fournir un aléatoire injectable pour reproduire les parties lors des tests.
 
-- [ ] **Boogie Woogie** : préciser la cible légale quand le propriétaire est dans Tokyo, et l'attribution du point de sortie dans chaque sens. La règle de base ne donne aucun point pour sortir : l'effet personnalisé doit être explicite. Définir le comportement si Tokyo est vide.
-- [ ] **Bornes des ressources** : préciser le plancher des points de victoire après Panique générale et le plancher du prix après Repaire maléfique en présence d'éventuelles autres réductions.
-- [ ] **Méchanceté** : préciser le gain pour six faces identiques (un ou deux triples), le traitement d'un seuil franchi lorsque sa réserve est vide et la possibilité de réclamer une tuile plus tard. Définir la gestion de plusieurs seuils franchis pendant une même résolution.
-- [ ] **Fin de partie** : le PDF arrête la partie en fin de tour et exige un gagnant vivant. Confirmer cette base pour la variante et départager plusieurs joueurs vivants à 20 points si de futurs effets le permettent. Définir la clôture du tour si le joueur actif meurt pendant son propre tour.
+## 3. Business : cartes et Méchanceté — back et règles
+
+- [ ] Intégrer les 20 cartes de [Rules-Cards](Rules-Cards), leurs prix et leurs types.
+- [ ] Gérer les trois cartes du marché, achats, remplacement, renouvellement payant, pioche et défausse.
+- [ ] Mettre en place les cartes conservées pour utilisation ultérieure, les Pouvoirs permanents après activation, leurs conditions réactivables (dont Veil), les effets différés et limites d’utilisation.
+- [ ] Implémenter les 20 effets personnalisés avec les conventions provisoires de dégâts.
+- [ ] Gérer la jauge de Méchanceté, les seuils 3 / 6 / 10, les réserves communes et le choix des tuiles après résolution de tous les dés ; une acquisition par niveau et par joueur, sans dépenser la Méchanceté.
+- [ ] Implémenter les 10 tuiles décrites dans [KOT_WICKEDNESS.md](KOT_WICKEDNESS.md).
+- [ ] Appliquer Cybercerveau une fois à chaque tour du propriétaire : compter une face deux fois, y compris pour les brelans, sans lancer de dé supplémentaire ; première utilisation au tour suivant son acquisition.
+- [ ] Conserver les effets récurrents des tuiles pendant toute la partie, et respecter les effets explicitement ponctuels.
+- [ ] Centraliser les paramètres de dégâts pour permettre un équilibrage ultérieur.
+- [ ] Exclure les jetons spécifiques et les dés supplémentaires du modèle et des effets.
+
+## 4. Business : IA — back
+
+- [ ] Faire utiliser aux IA les mêmes commandes légales qu’au joueur humain.
+- [ ] Définir une stratégie initiale simple de conservation et relance des dés.
+- [ ] Automatiser achats, choix de tuiles, activation des pouvoirs et choix de cibles.
+- [ ] Automatiser les réactions : protection, fuite de Tokyo et choix imposés par les effets.
+- [ ] Enchaîner les tours des IA et rendre la main au joueur sans bloquer l’interface.
+
+## 5. Data — back
+
+- [ ] Fournir les catalogues des personnages, cartes et tuiles via des repositories.
+- [ ] Assurer des identifiants stables pour les données utilisées par Business et View.
+- [ ] Fournir un repository de partie en mémoire pour la première version jouable.
+
+## 6. View et ViewModels — front, avec intégration back
+
+- [ ] Définir le design des quatre personnages et préparer les ressources graphiques.
+- [ ] Réaliser l’accueil et la sélection du personnage.
+- [ ] Réaliser l’écran de partie : joueurs, ressources, Tokyo, dés, phase et joueur actif.
+- [ ] Permettre sélection des dés, relance et validation.
+- [ ] Afficher le marché et permettre achats, renouvellement et consultation des cartes possédées.
+- [ ] Afficher la jauge de Méchanceté, le choix des tuiles et les tuiles acquises.
+- [ ] Réaliser les interactions de ciblage, répartition des dégâts, défense et fuite.
+- [ ] Afficher les actions des IA et les résultats des effets de façon compréhensible.
+- [ ] Réaliser l’écran de fin de partie et le lancement d’une nouvelle partie.
+- [ ] Brancher les ViewModels sur les actions et états Business, sans dupliquer les règles dans les écrans.
+- [ ] Préserver l’état lors des recréations d’écran ; aucune reprise après arrêt du processus, conformément à l’absence de sauvegarde.
+- [ ] Vérifier la lisibilité et l’utilisation sur plusieurs tailles d’écran.
+
+## 7. Règles et équilibrage — règles et équipe
+
+- [ ] Traiter progressivement les décisions de [A_CLARIFIER.md](A_CLARIFIER.md), notamment l’option à deux participants, le soin à l’achat de Moharaga et le recyclage des Actions.
+- [ ] Documenter les conventions retenues lorsque l’implémentation nécessite un choix provisoire.
+- [ ] Jouer des parties complètes pour vérifier durées, rythme, puissance des cartes et comportement des IA.
+- [ ] Ajuster ensuite les dégâts et interactions, sans bloquer la première version jouable.
+- [ ] Mettre à jour les descriptions affichées et les documents après chaque règle validée.
+
+## 8. Intégration, tests et livraison — toute l’équipe
+
+- [ ] Tester le moteur : phases, ressources, Tokyo, cartes, seuils et effets récurrents.
+- [ ] Tester les cas limites : défenses cumulées, soins, actions différées, éliminations et victoire.
+- [ ] Vérifier que les IA ne produisent pas de commandes illégales et qu’une partie peut se terminer.
+- [ ] Vérifier les parcours complets : choix du personnage → partie → victoire ou défaite → nouvelle partie.
+- [ ] Tester les interactions front/back et les changements de configuration Android.
+- [ ] Compiler et exécuter l’application sur émulateur ou appareil.
+- [ ] Documenter le lancement, l’architecture, les limites connues et la répartition des contributions.
+- [ ] Préparer une version de démonstration et vérifier les critères de la grille IPAN2 fournie dans `docs/`.
+
+## Ordre de réalisation proposé
+
+1. Architecture et contrats, puis moteur de base avec repository en mémoire.
+2. Écran de partie minimal branché aux ViewModels et première partie sans effets avancés.
+3. Cartes, Méchanceté et IA pour obtenir une partie complète.
+4. Recette, équilibrage, finition visuelle sans sauvegarde persistante.

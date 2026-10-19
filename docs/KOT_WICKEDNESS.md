@@ -4,19 +4,19 @@ Document pour Nadir Koudri, chargé du back-end et de la logique de jeu de The C
 
 ## Sources et périmètre
 
-- Photo des tuiles Wickedness fournie initialement : référence des 10 tuiles rouges transcrites ci-dessous ; image supprimée du dépôt à la demande de Nadir.
+- Photo des tuiles Wickedness fournie initialement : référence des 10 tuiles rouges transcrites ci-dessous ; image supprimée du dépôt après transcription.
 - [Règles françaises](Regles_KingOfTokyo_FR.pdf), King of Tokyo — Dark Edition, particulièrement pages 3 à 8.
 - [Rules-Cards](Rules-Cards) : 20 cartes Énergie personnalisées, thème Jujutsu Kaisen, utilisées à la place du catalogue Énergie original.
 - [README](../README.md) : répartition de l'équipe.
 - Les deux supports Android de `docs` concernent les exercices et la navigation. La grille IPAN2 demande notamment Kotlin, une architecture appropriée et une répartition des tâches visible ; ces documents n'ajoutent aucune règle de jeu.
 
-Le format annoncé dans `Rules-Cards` est de quatre personnages : un joueur humain choisit un personnage, les trois autres deviennent des IA. À quatre joueurs, seul Tokyo City est utilisé.
+Le catalogue prévoit quatre personnages. Le format retenu permet deux à quatre participants : un humain et une à trois IA. Un seul emplacement Tokyo City est utilisé.
 
-**Exclusion demandée par Nadir :** les jetons liés aux cartes (notamment Poison / radioactivité, ainsi que les jetons présentés avec les dés en page 3 du livret) et les dés supplémentaires ne font pas partie du périmètre. Les effets des cartes originales qui nécessitent ces éléments ne sont pas à intégrer. Les dés de base restent nécessaires. Cybercerveau utilise désormais un effet personnalisé sans dé supplémentaire, demandé par Nadir ; ses précisions restent dans [RAF.md](RAF.md).
+**Périmètre des spécifications du professeur :** les jetons liés aux cartes (notamment Poison / radioactivité, ainsi que les jetons présentés avec les dés en page 3 du livret) et les dés supplémentaires ne font pas partie du périmètre. Les effets des cartes originales qui nécessitent ces éléments ne sont pas à intégrer. Les dés de base restent nécessaires. Cybercerveau double l’effet d’un dé selon les spécifications du professeur ; ses précisions restent dans [A_CLARIFIER.md](A_CLARIFIER.md).
 
 ## Transcription des tuiles Wickedness
 
-Les noms, valeurs et effets suivants reprennent la photo, à l’exception de Cybercerveau dont l’effet a été remplacé à la demande de Nadir. Seuls les pictogrammes sont représentés par une notation textuelle : ⚡ = Énergie, ♥ = Points de Vie, ☆ = Points de Victoire, [1] = face 1, [⚡] = face Énergie, [♥] = face Cœur, [Griffe] = face d'attaque. Les retours à la ligne et la mise en gras de la photo ne sont pas reproduits.
+Le tableau ci-dessous présente les tuiles retenues selon les spécifications du professeur. Seuls les pictogrammes sont représentés par une notation textuelle : ⚡ = Énergie, ♥ = Points de Vie, ☆ = Points de Victoire, [1] = face 1, [⚡] = face Énergie, [♥] = face Cœur, [Griffe] = face d'attaque. Les retours à la ligne et la mise en gras de la photo ne sont pas reproduits.
 
 | Niveau de Méchanceté | Nom | Texte de la tuile |
 | --- | --- | --- |
@@ -27,7 +27,7 @@ Les noms, valeurs et effets suivants reprennent la photo, à l’exception de Cy
 | 6 | RÉGÉNÉRATION TOTALE | Vous pouvez avoir jusqu’à 12♥. Récupérez tous vos ♥ quand vous gagnez cette tuile. |
 | 6 | PANIQUE GÉNÉRALE | Tous les autres Monstres perdent 4☆, puis défaussez cette tuile. |
 | 6 | REPAIRE MALÉFIQUE | Le prix des cartes Énergie que vous achetez est diminué de 1⚡. |
-| 6 | CYBERCERVEAU | À chacun de vos tours, jusqu’à la fin de la partie, doublez l’effet d’un dé de votre choix. Ce dé ne compte pas comme deux faces pour les brelans. |
+| 6 | CYBERCERVEAU | À chacun de vos tours, jusqu’à la fin de la partie, comptez la face d’un dé de votre choix deux fois, y compris pour former les brelans. Aucun dé supplémentaire n’est lancé. |
 | 10 | RAYON STELLAIRE | Gagnez 1⚡ supplémentaire pour chaque [⚡] et 1♥ supplémentaire pour chaque [♥]. |
 | 10 | RAYON ANTIMATIÈRE | Doublez vos [Griffe]. |
 
@@ -35,15 +35,15 @@ La photo ne fournit que ces dix faces rouges. Les faces vertes ne sont pas trans
 
 ## Acquisition et conservation des Wickedness
 
-**Précision de Nadir :** les tuiles acquises restent actives pendant toute la partie ; leurs effets récurrents s’appliquent à chaque tour concerné. Cybercerveau permet donc de doubler l’effet d’un dé une fois à chacun des tours de son propriétaire. Les déclenchements explicitement ponctuels restent ceux du texte : soin complet à l’acquisition de Régénération totale ; perte de points puis défausse pour Panique générale.
+**Spécifications du professeur :** les tuiles acquises restent actives pendant toute la partie ; leurs effets récurrents s’appliquent à chaque tour concerné. Cybercerveau permet donc de compter la face d’un dé deux fois, y compris pour les brelans, une fois à chacun des tours de son propriétaire. Les déclenchements explicitement ponctuels restent ceux du texte : soin complet à l’acquisition de Régénération totale ; perte de points puis défausse pour Panique générale.
 
-D'après le livret, pages 4 et 5 :
+Base du livret, pages 4 et 5, avec le report d’acquisition confirmé pour la variante :
 
 - Les tuiles sont réparties en réserves communes : quatre au niveau 3, quatre au niveau 6, deux au niveau 10.
 - Un triple de 1 rapporte 2 points de Méchanceté ; un triple de 2 en rapporte 1 ; les 3 n'en rapportent pas. Les dés identiques au-delà du triple ajoutent des points de victoire, pas un bonus de Méchanceté par dé.
-- Atteindre ou dépasser un seuil permet de choisir une tuile encore disponible de ce niveau. La jauge ne redescend pas après acquisition.
+- Dans la variante retenue, après résolution de tous les dés, atteindre ou dépasser un seuil permet de choisir une tuile encore disponible de ce niveau. La jauge ne redescend pas après acquisition.
 - Le livret limite l'acquisition à une tuile de chaque niveau par joueur. Il faut mémoriser les niveaux déjà utilisés, y compris après la défausse de Panique générale.
-- L'effet d'une tuile devient actif à son acquisition ; elle est conservée sauf indication contraire. Panique générale est immédiatement défaussée après son effet.
+- L'effet d'une tuile devient actif à son acquisition ; elle est conservée sauf indication contraire. Panique générale est immédiatement défaussée après son effet. Cybercerveau ne modifie pas rétroactivement les dés résolus : il est utilisable à partir du prochain tour du propriétaire.
 - Les tuiles acquises par un joueur éliminé sont défaussées.
 
 ## Règles de base utiles au moteur
@@ -68,23 +68,23 @@ Référence : livret fourni, pages 4 à 8. Il s'agit de la base documentaire, av
 | Élimination | À zéro PV, le monstre est éliminé et ses cartes Pouvoir, tuiles et Énergies sont défaussées. |
 | Victoire | Vérification à la fin du tour selon ce livret : un monstre vivant ayant atteint 20 points de victoire, ou le dernier survivant, gagne. Un monstre mort ne gagne pas ; si tous sont éliminés simultanément, tous perdent. |
 
-La variante conseillée pour une partie initialement à deux joueurs et Tokyo Bay à cinq ou six joueurs ne sont pas nécessaires au format annoncé d'un humain et trois IA.
+Tokyo Bay est exclu puisque le format ne dépasse pas quatre participants. Pour une partie commençant à deux participants, le livret page 7 conseille une option : gagner 1 Énergie à l’entrée dans Tokyo au lieu de 1 point de victoire, et 1 Énergie au début du tour dans Tokyo au lieu de 2 points de victoire. Cette option reste à choisir pour notre version ; elle ne s’applique pas automatiquement lorsqu’une partie commencée à trois ou quatre se réduit à deux survivants.
 
 ## Cartes personnalisées : inventaire pour le back
 
-Les noms ci-dessous conservent l'orthographe de `Rules-Cards`. Ce tableau résume leurs effets ; le fichier source reste la référence de leur texte intégral. Les questions de durée, de cumul et de priorité sont regroupées dans [RAF.md](RAF.md).
+Les noms ci-dessous conservent l'orthographe de `Rules-Cards`. Ce tableau résume leurs effets ; le fichier source reste la référence de leur texte intégral. Les questions de durée, de cumul et de priorité sont regroupées dans [A_CLARIFIER.md](A_CLARIFIER.md).
 
 | Coût | Carte | Type déclaré | Effet à gérer |
 | --- | --- | --- | --- |
 | 5 | Domain Expension | Pouvoir | +1 dégât depuis Tokyo ; au moins trois Griffes finales ignorent immunités et réductions adverses. |
-| 5 | Inifnity | Pouvoir | Dépenser 2 Énergies pour annuler une attaque reçue ; une utilisation par tour de table. |
+| 5 | Infinity | Pouvoir | Dépenser 2 Énergies pour annuler une attaque reçue ; une utilisation par tour de table. |
 | 5 | Reversed Cursed Technique | Action | Soin immédiat de 4 PV, y compris dans Tokyo. |
 | 5 | Binding Vow | Pouvoir | Interdit le soin par les dés ; +2 dégâts ; soins de cartes autorisés. |
 | 5 | Moharaga's adaptation | Pouvoir | Maximum fixé à 12 PV ; soin immédiat de 2 PV à l'achat. |
 | 4 | Special Grade | Pouvoir | Première fois que des dégâts sont subis par tour de table : réduction de 2. |
 | 4 | Black Flash | Action | Après les dés, un brelan de 1, 2 ou 3 permet d'infliger 2 dégâts supplémentaires aux adversaires. |
 | 4 | Violet | Action | 2 dégâts à une cible ; depuis Tokyo, 3 dégâts à répartir entre les joueurs extérieurs. |
-| 4 | Veil | Action | Dans Tokyo, les attaques infligeant au moins 3 dégâts sont réduites de 1. |
+| 4 | Veil | Pouvoir | Dans Tokyo, les attaques infligeant au moins 3 dégâts sont réduites de 1. |
 | 4 | Resonance technique | Action | Une cible perd toute son Énergie ; gain de la moitié de cette quantité, arrondie au supérieur. |
 | 3 | Nanami's overtime | Pouvoir | Fin de tour sans dégât, précisé comme aucune Griffe résolue : +1 Énergie et +1 point de victoire. |
 | 3 | 10 Shadows | Pouvoir | Une fois par tour, transformer une face 1 ou 2 en Griffe. |
@@ -107,11 +107,24 @@ Le dépôt contient actuellement une activité Android de démarrage, sans moteu
 - **État du joueur** : PV, maximum de PV, Énergie, points de victoire, Méchanceté, cartes et tuiles possédées, seuils déjà utilisés, compteurs d'utilisation et effets différés.
 - **Moteur de règles indépendant d'Android** : reçoit une commande validée, produit le nouvel état et des événements métier. L'interface et les IA utilisent les mêmes commandes et les mêmes actions légales.
 - **Déclencheurs d'effets** : acquisition, début de tour, modification des dés, résolution des faces, calcul des dégâts par cible, réaction défensive, achats, fin de tour. Un effet différé peut survivre à la défausse de sa carte Action.
-- **Choix explicites** : dés à relancer, ordre de résolution, tuile à prendre, cible, répartition de dégâts, activation d'Inifnity et décision de fuite. Les IA doivent pouvoir répondre à ces mêmes choix.
+- **Choix explicites** : dés à relancer, ordre de résolution, tuile à prendre, cible, répartition de dégâts, activation d'Infinity et décision de fuite. Les IA doivent pouvoir répondre à ces mêmes choix.
 - **Aléatoire injectable** : rendre les lancers et la pioche reproductibles pour vérifier les règles.
 
-Les futurs tests métier devront couvrir les seuils franchis et épuisés, la résolution de plusieurs effets, les limites de soin, les réductions par cible, les actions différées, les éliminations et la victoire en fin de tour. Les arbitrages nécessaires avant ces implémentations sont dans `RAF.md`.
+Les futurs tests métier devront couvrir les seuils franchis et épuisés, la résolution de plusieurs effets, les limites de soin, les réductions par cible, les actions différées, les éliminations et la victoire en fin de tour. Les arbitrages nécessaires avant ces implémentations sont dans `A_CLARIFIER.md`.
 
 ## Dégâts : conventions provisoires
 
-Nadir autorise l'utilisation de valeurs arbitraires pour avancer, avec détail et équilibrage ultérieurs. Les valeurs écrites des cartes servent de base ; les conventions provisoires de calcul, de cumul et de défense sont regroupées dans [RAF.md](RAF.md#calcul-des-dégâts-et-interactions--différé-non-bloquant). Ces points ne bloquent pas le développement et ne modifient pas la transcription des tuiles. Les paramètres de dégâts devront être centralisés pour faciliter leur ajustement.
+Des valeurs provisoires sont utilisées pour avancer, avec détail et équilibrage ultérieurs. Les valeurs écrites des cartes servent de base ; les conventions provisoires de calcul, de cumul et de défense sont regroupées dans [A_CLARIFIER.md](A_CLARIFIER.md#calcul-des-dégâts-et-interactions--différé-non-bloquant). Ces points ne bloquent pas le développement et ne modifient pas la transcription des tuiles. Les paramètres de dégâts devront être centralisés pour faciliter leur ajustement.
+
+## Précisions de la variante
+
+- Deux, trois ou quatre participants : un humain et les autres contrôlés par une IA simple ; un seul emplacement Tokyo.
+- Aucune sauvegarde persistante ; les capacités propres aux personnages seront étudiées plus tard.
+- Un exemplaire de chaque carte Énergie ; marché de trois cartes ; défausse remélangée lorsque la pioche est épuisée.
+- Les cartes peuvent être conservées et jouées plus tard, uniquement pendant le tour de leur propriétaire. Une fois Infinity activé pendant son tour, sa réaction peut être utilisée pendant le tour adverse, en payant 2 Énergies, une fois par tour de table.
+- Les cartes Pouvoir sont permanentes après activation. Leurs conditions sont réévaluées : Domain Expension et Veil s’appliquent dans Tokyo, cessent de produire cet effet dehors et le retrouvent au retour dans Tokyo. Veil est un Pouvoir.
+- Au début du tour, les soins sont prioritaires sur les pertes de PV, notamment Éternel avant Sukuna’s finger.
+- Divergent Fist concerne uniquement le prochain tour après utilisation et retire au maximum une Énergie par cible pendant ce tour.
+- Boogie Woogie est inutilisable si Tokyo est vide ; le sortant gagne toujours un point.
+- L’élimination du joueur humain termine immédiatement sa partie : Game Over.
+- Le livret, page 5, autorise trois lancers maximum de base : le premier lancer et deux relances. Sournois et Incantation se cumulent jusqu’à cinq lancers maximum, en payant 1 Énergie pour le lancer supplémentaire d’Incantation. Les six dés peuvent être conservés ou repris librement entre les lancers ; seules les faces des dés choisis sont relancées.
