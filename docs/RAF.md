@@ -34,7 +34,7 @@ Pour le plan back, Nadir prend en charge l’ensemble des couches Business et Da
 - [ ] Initialiser une partie de deux à quatre participants, dont un humain et une à trois IA ; déterminer le premier joueur.
 - [ ] Gérer six dés, leur conservation et reprise après chaque lancer, les relances partielles et l’arrêt anticipé ; trois lancers de base, cinq maximum avec Sournois et Incantation (1 Énergie).
 - [ ] Résoudre les chiffres, l’Énergie, les Cœurs et les Griffes, avec ordre de résolution choisi.
-- [ ] Gérer Tokyo City : entrée obligatoire si libre, bonus, attaques et fuite.
+- [ ] Gérer Tokyo City : entrée obligatoire si libre, attaques et fuite ; bonus selon le nombre initial de participants (à deux : +1 Énergie à l’entrée et au début du tour ; à trois ou quatre : respectivement +1 et +2 points de victoire).
 - [ ] Gérer PV maximum, dépenses, élimination et passage au prochain joueur vivant.
 - [ ] Appliquer les effets de début et de fin de tour avec soins prioritaires, puis vérifier les conditions de victoire ; Game Over immédiat à l’élimination humaine.
 - [ ] Valider les commandes selon la phase, les ressources et les choix légaux.
@@ -84,7 +84,7 @@ Pour le plan back, Nadir prend en charge l’ensemble des couches Business et Da
 
 ## 7. Règles et équilibrage — règles et équipe
 
-- [ ] Traiter progressivement les décisions de [A_CLARIFIER.md](A_CLARIFIER.md), notamment l’option à deux participants, le soin à l’achat de Moharaga et le recyclage des Actions.
+- [ ] Traiter progressivement les décisions de [A_CLARIFIER.md](A_CLARIFIER.md), notamment le soin à l’achat de Moharaga et le recyclage des Actions.
 - [ ] Documenter les conventions retenues lorsque l’implémentation nécessite un choix provisoire.
 - [ ] Jouer des parties complètes pour vérifier durées, rythme, puissance des cartes et comportement des IA.
 - [ ] Ajuster ensuite les dégâts et interactions, sans bloquer la première version jouable.

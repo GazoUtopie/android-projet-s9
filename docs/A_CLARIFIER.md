@@ -25,11 +25,12 @@ Points relevés dans `Rules-Cards`, la photo initiale des tuiles Wickedness (sup
 
 - [x] **Acquisition des Wickedness** : après résolution de tous les dés, choisir une tuile disponible pour chaque seuil atteint ou dépassé (3, 6, 10), avec une seule acquisition par niveau et par joueur. Le pion reste à sa place ; la Méchanceté n’est pas dépensée. La tuile devient active immédiatement. Cybercerveau ne modifie pas les dés déjà résolus : première utilisation au prochain tour du propriétaire.
 
+- [x] **Partie initialement à deux participants** : appliquer l’option recommandée du livret page 7 : +1 Énergie à l’entrée dans Tokyo et +1 Énergie au début du tour dans Tokyo, à la place des bonus de points de victoire. Une partie commencée à trois ou quatre conserve ses bonus de points même après réduction à deux survivants.
+
 ## Points encore ouverts
 
 La base du moteur peut être développée. Les décisions ci-dessous restent à confirmer avant de considérer toutes les règles comme figées.
 
-- [ ] **Partie initialement à deux participants** : choisir entre les bonus ordinaires de Tokyo (+1 point à l’entrée, +2 points au début du tour) et l’option du livret page 7 (1 Énergie à chacun de ces deux moments). Cette option ne concerne pas une partie initialement à trois ou quatre réduite à deux survivants.
 - [ ] **Moharaga’s adaptation et activation différée** : la carte prévoit explicitement le soin de 2 PV à l’achat, alors que les Pouvoirs peuvent être activés plus tard. Proposition : conserver le soin à l’achat et porter le maximum à 12 lors de l’activation ; appliquer le maximum actuel au soin reçu.
 - [ ] **Recyclage des Actions** : le livret prévoit leur défausse après utilisation. Proposition pour les cartes conservées : une Action quitte la main à son utilisation et entre dans la défausse après résolution ; pour Divergent Fist, suivre son effet différé indépendamment de la carte. Confirmer ce recyclage avec la pioche remélangée.
 

@@ -61,14 +61,14 @@ Référence : livret fourni, pages 4 à 8. Il s'agit de la base documentaire, av
 | Énergie | Chaque face Énergie rapporte une unité conservée jusqu'à utilisation. |
 | Griffes | Depuis Tokyo : attaque de tous les adversaires dehors. Depuis l'extérieur : attaque des occupants de Tokyo. Chaque Griffe inflige un dégât à chaque cible concernée, avant modificateurs. |
 | Soin | Chaque face Cœur soigne d'un PV hors Tokyo, dans la limite du maximum. Les dés ne soignent pas dans Tokyo ; cartes et tuiles peuvent soigner dans Tokyo. |
-| Tokyo | Entrée obligatoire si vide pendant la phase correspondante : +1 point de victoire. Commencer son tour dans Tokyo : +2 points de victoire. |
+| Tokyo | Entrée obligatoire si vide pendant la phase correspondante. Partie commencée à trois ou quatre : +1 point de victoire à l’entrée, +2 au début du tour dans Tokyo. Partie commencée à deux : +1 Énergie à chacun de ces moments, à la place des points. |
 | Fuite | Un occupant blessé par les Griffes peut choisir de sortir après avoir subi les dégâts. Les pertes de PV causées par une carte ne permettent pas cette fuite selon le livret. |
 | Achats | Une ou plusieurs cartes achetables si l'Énergie suffit ; chaque achat révèle immédiatement une carte de remplacement. Dépenser 2 Énergies permet de renouveler les trois cartes visibles. |
 | Types | Pouvoir : conservé et actif selon son texte. Action : résolue immédiatement puis défaussée dans la règle de base. |
 | Élimination | À zéro PV, le monstre est éliminé et ses cartes Pouvoir, tuiles et Énergies sont défaussées. |
 | Victoire | Vérification à la fin du tour selon ce livret : un monstre vivant ayant atteint 20 points de victoire, ou le dernier survivant, gagne. Un monstre mort ne gagne pas ; si tous sont éliminés simultanément, tous perdent. |
 
-Tokyo Bay est exclu puisque le format ne dépasse pas quatre participants. Pour une partie commençant à deux participants, le livret page 7 conseille une option : gagner 1 Énergie à l’entrée dans Tokyo au lieu de 1 point de victoire, et 1 Énergie au début du tour dans Tokyo au lieu de 2 points de victoire. Cette option reste à choisir pour notre version ; elle ne s’applique pas automatiquement lorsqu’une partie commencée à trois ou quatre se réduit à deux survivants.
+Tokyo Bay est exclu puisque le format ne dépasse pas quatre participants. Pour une partie commençant à deux participants, le livret page 7 conseille une option : gagner 1 Énergie à l’entrée dans Tokyo au lieu de 1 point de victoire, et 1 Énergie au début du tour dans Tokyo au lieu de 2 points de victoire. Cette option est retenue pour notre version. Une partie commencée à trois ou quatre conserve les bonus ordinaires de points de victoire, même si elle se réduit à deux survivants.
 
 ## Cartes personnalisées : inventaire pour le back
 
