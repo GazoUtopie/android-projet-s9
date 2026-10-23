@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_margin="4dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:src="@drawable/char_gojo"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Culling.Circle"
+                app:strokeColor="@color/infinity_blue"
+                app:strokeWidth="2dp"
+                android:padding="1dp" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_margin="4dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:src="@drawable/char_megumi"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Culling.Circle"
+                app:strokeColor="@color/cursed_purple"
+                app:strokeWidth="2dp"
+                android:padding="1dp" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_margin="4dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:src="@drawable/char_hakari"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Culling.Circle"
+                app:strokeColor="@color/points_gold"
+                app:strokeWidth="2dp"
+                android:padding="1dp" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_margin="4dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:src="@drawable/char_jogo"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Culling.Circle"
+                app:strokeColor="@color/wickedness_red"
+                app:strokeWidth="2dp"
+                android:padding="1dp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:letterSpacing="0.1"
+            android:text="@string/home_title"
+            android:textAppearance="@style/TextAppearance.Culling.Title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:maxWidth="420dp"
+            android:text="@string/home_subtitle"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="@color/text_secondary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_play"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="@string/home_play" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_rules"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/home_rules" />
+    </LinearLayout>
+</ScrollView>

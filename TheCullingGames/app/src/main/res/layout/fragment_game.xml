@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Phone portrait: one scrolling column. -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
+
+        <include
+            android:id="@+id/board"
+            layout="@layout/game_board_panel" />
+
+        <include
+            android:id="@+id/cards"
+            layout="@layout/game_cards_panel" />
+
+        <include
+            android:id="@+id/log_panel"
+            layout="@layout/game_log_panel" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
