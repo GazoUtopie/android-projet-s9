@@ -1,3 +1,239 @@
 <resources>
-    <string name="app_name">TheCullingGames</string>
+    <string name="app_name">The Culling Games</string>
+
+    <!-- Navigation labels -->
+    <string name="label_home">The Culling Games</string>
+    <string name="label_select">Choisir son sorcier</string>
+    <string name="label_game">Culling Games</string>
+    <string name="label_game_over">Fin de partie</string>
+    <string name="label_rules">Règles</string>
+
+    <!-- Home -->
+    <string name="home_title">THE CULLING GAMES</string>
+    <string name="home_subtitle">Un jeu de dés et de fléaux inspiré de King of Tokyo, dans l’univers de Jujutsu Kaisen.</string>
+    <string name="home_play">Nouvelle partie</string>
+    <string name="home_rules">Règles et cartes</string>
+
+    <!-- Character selection -->
+    <string name="select_title">Choisissez votre sorcier</string>
+    <string name="select_hint">Les autres sorciers seront contrôlés par l’IA.</string>
+    <string name="select_opponents">Nombre d’adversaires IA</string>
+    <string name="select_start">Entrer dans les Culling Games</string>
+    <string name="select_pick_first">Choisissez d’abord un sorcier</string>
+
+    <!-- Game: zones and labels -->
+    <string name="tokyo_zone">Colonie de Tokyo</string>
+    <string name="tokyo_empty">Vide — le prochain sorcier y entrera</string>
+    <string name="tokyo_badge">TOKYO</string>
+    <string name="you">Vous</string>
+    <string name="ai">IA</string>
+    <string name="eliminated">Éliminé</string>
+    <string name="player_stats">♥ %1$d/%2$d   ⚡ %3$d   ★ %4$d</string>
+    <string name="section_dice">Dés</string>
+    <string name="section_market">Marché des techniques</string>
+    <string name="section_hand">Votre main</string>
+    <string name="section_powers">Pouvoirs actifs et tuiles</string>
+    <string name="section_log">Journal du combat</string>
+    <string name="section_wickedness">Méchanceté : %1$d</string>
+    <string name="hand_empty">Aucune carte en main. Achetez des techniques au marché.</string>
+    <string name="powers_empty">Aucun pouvoir actif.</string>
+    <string name="tap_die_hint">Touchez un dé pour le conserver ou le reprendre.</string>
+
+    <!-- Game: status line -->
+    <string name="status_roll">Votre tour — lancez les dés</string>
+    <string name="status_rolling">Votre tour — lancer %1$d/%2$d</string>
+    <string name="status_resolving">Résolvez vos dés dans l’ordre de votre choix</string>
+    <string name="status_tile">Choisissez une tuile de Méchanceté</string>
+    <string name="status_buy">Achetez des techniques ou terminez votre tour</string>
+    <string name="status_ai_turn">Tour de %1$s…</string>
+    <string name="status_waiting_you">%1$s attend votre décision</string>
+    <string name="status_over">Partie terminée</string>
+
+    <!-- Game: buttons -->
+    <string name="action_roll">Lancer</string>
+    <string name="action_reroll">Relancer</string>
+    <string name="action_stop">Valider les dés</string>
+    <string name="action_incantation">Incantation (1⚡)</string>
+    <string name="action_ten_shadows">10 Shadows</string>
+    <string name="action_cyber">Cybercerveau</string>
+    <string name="action_refresh">Renouveler (%1$d⚡)</string>
+    <string name="action_deck_top">Pioche (Maki)</string>
+    <string name="action_end_turn">Finir le tour</string>
+    <string name="action_buy">Acheter (%1$d⚡)</string>
+    <string name="action_activate">Activer le pouvoir</string>
+    <string name="action_play">Jouer l’action</string>
+    <string name="action_close">Fermer</string>
+    <string name="action_cancel">Annuler</string>
+    <string name="action_yes">Oui</string>
+    <string name="action_no">Non</string>
+    <string name="action_rules">Règles</string>
+
+    <string name="group_numbers">Chiffres</string>
+    <string name="group_energy">Énergie</string>
+    <string name="group_hearts">Cœurs</string>
+    <string name="group_claws">Griffes</string>
+
+    <!-- Game: dialogs -->
+    <string name="dialog_flee_title">Quitter Tokyo ?</string>
+    <string name="dialog_flee_message">%1$s vous a blessé. Voulez-vous quitter la colonie de Tokyo ? Il y entrera à votre place.</string>
+    <string name="dialog_flee_yes">Fuir Tokyo</string>
+    <string name="dialog_flee_no">Rester</string>
+    <string name="dialog_infinity_title">Infinity</string>
+    <string name="dialog_infinity_message">%1$s vous attaque pour %2$d dégât(s). Payer 2⚡ pour annuler entièrement l’attaque ?</string>
+    <string name="dialog_tile_title">Seuil %1$d de Méchanceté atteint</string>
+    <string name="dialog_target_title">Choisissez la cible</string>
+    <string name="dialog_split_title">Répartissez 3 dégâts</string>
+    <string name="dialog_die_title">Choisissez un dé</string>
+    <string name="dialog_die_item">Dé %1$d : %2$s</string>
+    <string name="dialog_deck_top">Première carte de la pioche</string>
+    <string name="card_cost_type">%1$d⚡ · %2$s</string>
+    <string name="card_type_power">Pouvoir</string>
+    <string name="card_type_action">Action</string>
+    <string name="card_price">%1$d⚡</string>
+    <string name="tile_level">Méchanceté %1$d</string>
+    <string name="split_item">%1$s : %2$d</string>
+    <string name="split_separator">" · "</string>
+
+    <string name="dialog_quit_title">Abandonner la partie ?</string>
+    <string name="dialog_quit_message">La partie en cours sera perdue (aucune sauvegarde).</string>
+    <string name="dialog_quit_yes">Abandonner</string>
+
+    <!-- Game over -->
+    <string name="result_victory">Victoire !</string>
+    <string name="result_defeat">Défaite…</string>
+    <string name="result_victory_message">Vous avez survécu aux Culling Games.</string>
+    <string name="result_winner_message">%1$s remporte les Culling Games.</string>
+    <string name="result_no_winner">Aucun sorcier n’a survécu.</string>
+    <string name="result_defeat_eliminated">Vous avez été éliminé.</string>
+    <string name="result_play_again">Rejouer</string>
+    <string name="result_home">Accueil</string>
+    <string name="result_stats">Points : %1$d ★ · Vie : %2$d ♥ · Tours de la partie : %3$d</string>
+
+    <!-- Dice faces (accessibility) -->
+    <string name="face_one">1</string>
+    <string name="face_two">2</string>
+    <string name="face_three">3</string>
+    <string name="face_energy">Énergie</string>
+    <string name="face_heart">Cœur</string>
+    <string name="face_claw">Griffe</string>
+    <string name="die_kept">conservé</string>
+
+    <!-- Log -->
+    <string name="log_first_player">%1$s commence la partie (le plus de Griffes).</string>
+    <string name="log_turn">— Tour de %1$s —</string>
+    <string name="log_rolled">%1$s lance (%2$d) : %3$s</string>
+    <string name="log_die_changed">%1$s utilise %2$s sur un dé : %3$s</string>
+    <string name="log_vp_gain">%1$s gagne %2$d ★ (%3$s)</string>
+    <string name="log_vp_loss">%1$s perd %2$d ★ (%3$s)</string>
+    <string name="log_energy_gain">%1$s gagne %2$d ⚡ (%3$s)</string>
+    <string name="log_energy_loss">%1$s perd %2$d ⚡ (%3$s)</string>
+    <string name="log_heal">%1$s récupère %2$d ♥ (%3$s)</string>
+    <string name="log_hp_loss">%1$s perd %2$d ♥ (%3$s)</string>
+    <string name="log_wickedness">%1$s gagne %2$d de Méchanceté</string>
+    <string name="log_damage">%1$s inflige %2$d dégât(s) à %3$s (%4$s)</string>
+    <string name="log_cancelled">%1$s annule l’attaque grâce à %2$s</string>
+    <string name="log_reduced">%1$s réduit les dégâts de %2$d grâce à %3$s</string>
+    <string name="log_enter_tokyo">%1$s entre dans la colonie de Tokyo</string>
+    <string name="log_leave_tokyo">%1$s quitte la colonie de Tokyo</string>
+    <string name="log_tile">%1$s acquiert la tuile %2$s</string>
+    <string name="log_bought">%1$s achète %2$s pour %3$d ⚡</string>
+    <string name="log_refresh">%1$s renouvelle le marché</string>
+    <string name="log_power">%1$s active le pouvoir %2$s</string>
+    <string name="log_action">%1$s joue %2$s</string>
+    <string name="log_eliminated">%1$s est éliminé !</string>
+    <string name="log_game_over_winner">Fin de partie : %1$s l’emporte.</string>
+    <string name="log_game_over_none">Fin de partie : aucun vainqueur.</string>
+
+    <string name="source_dice">dés</string>
+    <string name="source_triple">brelan</string>
+    <string name="source_tokyo_entry">entrée dans Tokyo</string>
+    <string name="source_tokyo_start">début de tour dans Tokyo</string>
+    <string name="source_market">renouvellement</string>
+    <string name="source_claws">Griffes</string>
+
+    <!-- Energy cards: names keep the spelling of docs/Rules-Cards -->
+    <string name="card_domain_expansion">Domain Expansion</string>
+    <string name="card_infinity">Infinity</string>
+    <string name="card_reverse_cursed">Reversed Cursed Technique</string>
+    <string name="card_binding_vow">Binding Vow</string>
+    <string name="card_mahoraga">Mahoraga’s adaptation</string>
+    <string name="card_special_grade">Special Grade</string>
+    <string name="card_black_flash">Black Flash</string>
+    <string name="card_violet">Violet</string>
+    <string name="card_veil">Veil</string>
+    <string name="card_resonance">Resonance technique</string>
+    <string name="card_nanami">Nanami’s overtime</string>
+    <string name="card_ten_shadows">10 Shadows</string>
+    <string name="card_sukuna">Sukuna’s finger</string>
+    <string name="card_overflowing">Overflowing Energy</string>
+    <string name="card_incantation">Incantation</string>
+    <string name="card_divergent_fist">Divergent Fist</string>
+    <string name="card_boogie_woogie">Boogie Woogie</string>
+    <string name="card_maki_glasses">Maki’s glasses</string>
+    <string name="card_blood_manipulation">Blood Manipulation</string>
+    <string name="card_talisman">Talisman</string>
+
+    <string name="card_domain_expansion_desc">Tant que vous êtes dans Tokyo, vous infligez +1 dégât. Si vous obtenez au moins 3 Griffes lors de votre lancer final, vous ignorez toutes les immunités et réductions de dégâts des autres monstres.</string>
+    <string name="card_infinity_desc">Une fois par tour de table, lorsqu’un monstre vous inflige des dégâts, vous pouvez dépenser 2 Énergie pour annuler entièrement cette attaque.</string>
+    <string name="card_reverse_cursed_desc">Vous récupérez immédiatement 4 Cœurs. Exceptionnellement, cette carte peut être utilisée même si vous êtes dans Tokyo.</string>
+    <string name="card_binding_vow_desc">Vous ne pouvez plus gagner de Cœurs grâce à vos dés (les effets de cartes fonctionnent toujours). En contrepartie, vous infligez +2 dégâts.</string>
+    <string name="card_mahoraga_desc">Votre santé maximale passe à 12 Cœurs. Gagnez immédiatement 2 Cœurs à l’achat de cette carte.</string>
+    <string name="card_special_grade_desc">La première fois que vous subissez des dégâts à chaque tour de table, réduisez ces dégâts de 2.</string>
+    <string name="card_black_flash_desc">Jouez cette carte après avoir résolu vos dés. Si vous avez obtenu un brelan de 1, 2 ou 3, infligez immédiatement 2 dégâts à vos adversaires.</string>
+    <string name="card_violet_desc">Infligez 2 dégâts au monstre de votre choix. Si vous êtes dans Tokyo, répartissez 3 dégâts comme vous le souhaitez entre les joueurs à l’extérieur.</string>
+    <string name="card_veil_desc">Tant que vous êtes dans Tokyo, chaque attaque qui vous inflige 3 dégâts ou plus est réduite de 1 dégât.</string>
+    <string name="card_resonance_desc">Choisissez un monstre. Il perd toute son Énergie. Vous gagnez la moitié de l’Énergie défaussée (arrondie au supérieur).</string>
+    <string name="card_nanami_desc">Si à la fin de votre tour aucune face Griffe n’a été résolue, vous gagnez 1 Énergie et 1 Étoile.</string>
+    <string name="card_ten_shadows_desc">Une fois par tour, vous pouvez transformer un dé affichant un 1 ou un 2 en une face Griffe.</string>
+    <string name="card_sukuna_desc">Au début de chacun de vos tours, vous gagnez 1 Étoile mais vous perdez obligatoirement 1 Cœur. Si cela vous tue, vous êtes éliminé.</string>
+    <string name="card_overflowing_desc">Récupérez immédiatement 3 Cœurs.</string>
+    <string name="card_incantation_desc">Une fois par tour, vous pouvez dépenser 1 Énergie pour vous accorder un lancer supplémentaire.</string>
+    <string name="card_divergent_fist_desc">Lors de votre prochain tour, lorsque vous infligez au moins 1 dégât à un monstre, ce monstre perd 1 Énergie (si possible).</string>
+    <string name="card_boogie_woogie_desc">Échangez immédiatement votre place avec le joueur dans Tokyo : il en sort en gagnant 1 point et vous y entrez sans gagner le point d’entrée. Et inversement : depuis Tokyo, échangez avec un joueur à l’extérieur ; vous en sortez en gagnant 1 point.</string>
+    <string name="card_maki_glasses_desc">Vous pouvez regarder la première carte de la pioche à tout moment et l’acheter comme si elle était visible.</string>
+    <string name="card_blood_manipulation_desc">Sacrifiez 1 Cœur pour infliger 2 dégâts au joueur hors de Tokyo de votre choix. Impossible si vous n’avez qu’un seul Cœur.</string>
+    <string name="card_talisman_desc">Défaussez les cartes visibles, révélez-en 3 nouvelles et gagnez immédiatement 1 Énergie.</string>
+
+    <!-- Wickedness tiles (docs/KOT_WICKEDNESS.md) -->
+    <string name="tile_infatigable">Infatigable</string>
+    <string name="tile_eternel">Éternel</string>
+    <string name="tile_furtif">Furtif</string>
+    <string name="tile_sournois">Sournois</string>
+    <string name="tile_regeneration">Régénération totale</string>
+    <string name="tile_panique">Panique générale</string>
+    <string name="tile_repaire">Repaire maléfique</string>
+    <string name="tile_cyber">Cybercerveau</string>
+    <string name="tile_stellaire">Rayon stellaire</string>
+    <string name="tile_antimatiere">Rayon antimatière</string>
+
+    <string name="tile_infatigable_desc">Au début de votre tour, gagnez 1⚡.</string>
+    <string name="tile_eternel_desc">Au début de votre tour, gagnez 1♥.</string>
+    <string name="tile_furtif_desc">Gagnez 1★ supplémentaire lorsque vous obtenez au moins un brelan de 1.</string>
+    <string name="tile_sournois_desc">Gagnez un lancer supplémentaire à chaque tour.</string>
+    <string name="tile_regeneration_desc">Vous pouvez avoir jusqu’à 12♥. Récupérez tous vos ♥ quand vous gagnez cette tuile.</string>
+    <string name="tile_panique_desc">Tous les autres monstres perdent 4★, puis défaussez cette tuile.</string>
+    <string name="tile_repaire_desc">Le prix des cartes Énergie que vous achetez est diminué de 1⚡.</string>
+    <string name="tile_cyber_desc">À chacun de vos tours, comptez la face d’un dé de votre choix deux fois, y compris pour les brelans. Utilisable à partir du tour suivant son acquisition.</string>
+    <string name="tile_stellaire_desc">Gagnez 1⚡ supplémentaire pour chaque face Énergie et 1♥ supplémentaire pour chaque face Cœur.</string>
+    <string name="tile_antimatiere_desc">Doublez vos Griffes.</string>
+
+    <!-- Characters -->
+    <string name="char_gojo_title">Le plus fort</string>
+    <string name="char_megumi_title">Les Dix Ombres</string>
+    <string name="char_hakari_title">Jackpot</string>
+    <string name="char_jogo_title">Fléau des volcans</string>
+
+    <!-- Rules (help content) -->
+    <string name="rules_goal_title">But du jeu</string>
+    <string name="rules_goal">Soyez le premier sorcier à atteindre 20 ★ ou le dernier survivant. Vous commencez avec 10 ♥. Si vous tombez à 0 ♥, la partie est perdue.</string>
+    <string name="rules_turn_title">Déroulement d’un tour</string>
+    <string name="rules_turn">1. Lancez les 6 dés jusqu’à 3 fois. Touchez un dé pour le conserver, touchez-le à nouveau pour le reprendre.\n2. Validez puis résolvez vos dés dans l’ordre de votre choix.\n3. Si la colonie de Tokyo est vide, vous y entrez.\n4. Achetez des techniques au marché avec votre Énergie, puis terminez votre tour.</string>
+    <string name="rules_dice_title">Les faces des dés</string>
+    <string name="rules_dice">• 1, 2, 3 : un brelan rapporte sa valeur en ★, +1 ★ par dé identique supplémentaire.\n• ⚡ Énergie : sert à acheter des cartes.\n• ♥ Cœur : soigne 1 ♥, sauf dans Tokyo.\n• Griffe : 1 dégât. Depuis Tokyo, vous frappez tous les autres sorciers ; dehors, vous frappez celui qui occupe Tokyo.</string>
+    <string name="rules_tokyo_title">La colonie de Tokyo</string>
+    <string name="rules_tokyo">Entrer dans Tokyo rapporte 1 ★, et commencer son tour dans Tokyo 2 ★ (en partie à deux : 1 ⚡ à la place). Dans Tokyo, vous subissez toutes les attaques et vos dés ne soignent pas. Quand on vous blesse avec des Griffes, vous pouvez fuir : l’attaquant prend votre place.</string>
+    <string name="rules_wickedness_title">Méchanceté</string>
+    <string name="rules_wickedness">Un brelan de 1 donne 2 points de Méchanceté, un brelan de 2 en donne 1. Aux seuils 3, 6 et 10, choisissez une tuile de Méchanceté : son effet dure toute la partie. Une seule tuile par seuil.</string>
+    <string name="rules_cards_title">Techniques (cartes Énergie)</string>
+    <string name="rules_cards">Trois cartes sont visibles au marché ; 2 ⚡ permettent de les renouveler. Les cartes achetées vont dans votre main : activez les Pouvoirs (effet permanent) et jouez les Actions (effet immédiat) pendant votre tour. Touchez une carte pour lire son effet.</string>
 </resources>

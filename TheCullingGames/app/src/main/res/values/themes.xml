@@ -1,9 +1,67 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.TheCullingGames" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <!-- The game always uses a dark "cursed energy" theme, whatever the system setting. -->
+    <style name="Base.Theme.TheCullingGames" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/cursed_purple</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimaryContainer">@color/cursed_purple_dark</item>
+        <item name="colorOnPrimaryContainer">@color/text_primary</item>
+        <item name="colorSecondary">@color/infinity_blue</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorTertiary">@color/wickedness_red</item>
+        <item name="colorError">@color/wickedness_red</item>
+        <item name="android:colorBackground">@color/cursed_background</item>
+        <item name="colorSurface">@color/cursed_surface</item>
+        <item name="colorSurfaceContainer">@color/cursed_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/cursed_surface_high</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="colorOutline">@color/cursed_outline</item>
+        <item name="android:statusBarColor" tools:targetApi="34">@color/cursed_background</item>
     </style>
 
     <style name="Theme.TheCullingGames" parent="Base.Theme.TheCullingGames" />
+
+    <style name="TextAppearance.Culling.Title" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Culling.Section" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textColor">@color/cursed_purple</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.08</item>
+    </style>
+
+    <style name="Widget.Culling.Card" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@color/cursed_surface</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="strokeColor">@color/cursed_outline</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <style name="ShapeAppearance.Culling.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="ShapeAppearance.Culling.Card" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="RulesTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Culling.Section</item>
+    </style>
+
+    <style name="RulesBody">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodyMedium</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:lineSpacingMultiplier">1.15</item>
+    </style>
 </resources>
