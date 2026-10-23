@@ -31,8 +31,8 @@ Points relevés dans `Rules-Cards`, la photo initiale des tuiles Wickedness (sup
 
 La base du moteur peut être développée. Les décisions ci-dessous restent à confirmer avant de considérer toutes les règles comme figées.
 
-- [ ] **Moharaga’s adaptation et activation différée** : la carte prévoit explicitement le soin de 2 PV à l’achat, alors que les Pouvoirs peuvent être activés plus tard. Proposition : conserver le soin à l’achat et porter le maximum à 12 lors de l’activation ; appliquer le maximum actuel au soin reçu.
-- [ ] **Recyclage des Actions** : le livret prévoit leur défausse après utilisation. Proposition pour les cartes conservées : une Action quitte la main à son utilisation et entre dans la défausse après résolution ; pour Divergent Fist, suivre son effet différé indépendamment de la carte. Confirmer ce recyclage avec la pioche remélangée.
+- [x] **Moharaga’s adaptation et activation différée** : proposition retenue. Soin de 2 PV à l’achat, dans la limite du maximum actuel ; maximum porté à 12 lors de l’activation du Pouvoir.
+- [x] **Recyclage des Actions** : proposition retenue. Une Action quitte la main à son utilisation et entre dans la défausse après résolution ; la défausse est remélangée quand la pioche est vide. L’effet différé de Divergent Fist est suivi indépendamment de la carte.
 
 - [x] **Infinity** : une fois le Pouvoir activé pendant son tour, son propriétaire peut payer 2 Énergies pour annuler une attaque pendant le tour adverse, dans la limite d’une utilisation par tour de table.
 
@@ -63,6 +63,24 @@ Les points ci-dessous sont conservés pour la révision ultérieure, sans bloque
 - [ ] **Nanami's overtime** : « aucun dégât » et « aucune face Griffe résolue » ne sont pas équivalents : Griffes sans cible, attaque annulée, ou dégâts de cartes sans Griffes. Choisir la condition exacte.
 - [ ] **Violet** : préciser les répartitions autorisées des trois dégâts depuis Tokyo et l'application des protections par cible.
 - [ ] **Blessure ou perte de PV** : distinguer les dégâts de Griffes des dégâts de cartes et des coûts en PV. Le livret ne permet la fuite de Tokyo qu'après blessure par les Griffes ; décider explicitement de toute exception personnalisée.
+
+## Conventions retenues dans l’implémentation
+
+Choix faits dans le moteur (`GameEngine`) là où les textes laissaient une ambiguïté. Ils restent révisables ; les valeurs numériques sont toutes dans `RulesConfig`.
+
+- **Moment d’utilisation des cartes** : pendant son propre tour, en phase de lancer (avant ou entre les lancers) et en phase d’achat ; pas pendant la résolution des dés. Black Flash seulement en phase d’achat, si un brelan de 1, 2 ou 3 a été résolu ce tour-ci.
+- **10 Shadows et Cybercerveau** : utilisables après un lancer, jusqu’à la résolution du premier groupe de faces. Le dé de Cybercerveau reste désigné même s’il est relancé ensuite.
+- **Ordre de résolution** : le joueur résout ses faces par groupe (chiffres, Énergie, Cœurs, Griffes), dans l’ordre de son choix.
+- **Black Flash** : 2 dégâts de carte à chaque adversaire vivant.
+- **Violet** : hors de Tokyo, 2 dégâts à n’importe quel adversaire (occupant de Tokyo compris) ; depuis Tokyo, 3 dégâts répartis entre les adversaires, toutes les répartitions entières étant proposées.
+- **Boogie Woogie** : « et inversement » est lu ainsi : depuis Tokyo, on échange avec un joueur à l’extérieur. Celui qui sort gagne toujours 1 point, celui qui entre ne gagne pas le point d’entrée.
+- **Infinity et Divergent Fist** : s’appliquent aussi aux dégâts de cartes (« lorsqu’un monstre vous inflige des dégâts »).
+- **Reset « par tour de table »** (Infinity, Special Grade) : au début du tour du propriétaire.
+- **Entrée dans Tokyo** : après la résolution des dés et le choix des tuiles de Méchanceté, avant les achats.
+- **Égalité à 20 points** : le joueur actif gagne s’il a 20 points ; sinon, le joueur qui a le plus de points.
+- **Élimination** : la main et les Pouvoirs du joueur éliminé vont dans la défausse (et seront remélangés) ; ses tuiles sont retirées de la partie.
+- **Sournois** acquis pendant un tour : le lancer supplémentaire compte à partir du tour suivant.
+- **IA** : stratégie simple. Elle garde Griffes, Énergie, paires de chiffres et Cœurs si elle est blessée ; fuit Tokyo à 5 PV ou moins ; utilise Infinity contre 2 dégâts ou plus ; achète la carte la plus chère abordable ; choisit les tuiles selon une priorité fixe.
 
 ## Soin et limites : lecture des textes
 

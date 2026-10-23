@@ -101,7 +101,7 @@ Ces cartes ne sont pas distribuées automatiquement à chaque tour par les règl
 
 ## Organisation proposée du back-end
 
-Le dépôt contient actuellement une activité Android de démarrage, sans moteur métier dans les sources Kotlin consultées. Le back désigne ici la logique Kotlin de l'application ; les documents n'imposent pas de serveur distant.
+Cette organisation est implémentée dans `TheCullingGames/app/src/main/java/fr/epita/thecullinggames/business` (moteur `GameEngine`, IA `SimpleAi`) et `data` (catalogues, repository en mémoire) ; voir la correspondance spécifications → code dans le [README](../README.md). Le back désigne ici la logique Kotlin de l'application ; les documents n'imposent pas de serveur distant.
 
 - **État de partie** : joueurs vivants, joueur actif, phase, occupation de Tokyo, dés et dés conservés, nombre de lancers, pioche, marché et défausse, réserves Wickedness, choix en attente.
 - **État du joueur** : PV, maximum de PV, Énergie, points de victoire, Méchanceté, cartes et tuiles possédées, seuils déjà utilisés, compteurs d'utilisation et effets différés.

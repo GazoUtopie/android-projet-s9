@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/rules_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView style="@style/RulesTitle" android:text="@string/rules_goal_title" />
+        <TextView style="@style/RulesBody" android:text="@string/rules_goal" />
+        <TextView style="@style/RulesTitle" android:text="@string/rules_turn_title" />
+        <TextView style="@style/RulesBody" android:text="@string/rules_turn" />
+        <TextView style="@style/RulesTitle" android:text="@string/rules_dice_title" />
+        <TextView style="@style/RulesBody" android:text="@string/rules_dice" />
+        <TextView style="@style/RulesTitle" android:text="@string/rules_tokyo_title" />
+        <TextView style="@style/RulesBody" android:text="@string/rules_tokyo" />
+        <TextView style="@style/RulesTitle" android:text="@string/rules_wickedness_title" />
+        <TextView style="@style/RulesBody" android:text="@string/rules_wickedness" />
+        <TextView style="@style/RulesTitle" android:text="@string/rules_cards_title" />
+        <TextView style="@style/RulesBody" android:text="@string/rules_cards" />
+
+        <LinearLayout
+            android:id="@+id/cards_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <TextView style="@style/RulesTitle" android:text="@string/rules_wickedness_title" />
+
+        <LinearLayout
+            android:id="@+id/tiles_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Screens of the app and the actions between them (Navigation component + SafeArgs). -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="fr.epita.thecullinggames.ui.home.HomeFragment"
+        android:label="@string/label_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_characterSelectFragment"
+            app:destination="@id/characterSelectFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_rulesFragment"
+            app:destination="@id/rulesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/rulesFragment"
+        android:name="fr.epita.thecullinggames.ui.home.RulesFragment"
+        android:label="@string/label_rules"
+        tools:layout="@layout/fragment_rules" />
+
+    <fragment
+        android:id="@+id/characterSelectFragment"
+        android:name="fr.epita.thecullinggames.ui.select.CharacterSelectFragment"
+        android:label="@string/label_select"
+        tools:layout="@layout/fragment_character_select">
+        <action
+            android:id="@+id/action_characterSelectFragment_to_gameFragment"
+            app:destination="@id/gameFragment"
+            app:popUpTo="@id/homeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gameFragment"
+        android:name="fr.epita.thecullinggames.ui.game.GameFragment"
+        android:label="@string/label_game"
+        tools:layout="@layout/fragment_game">
+        <argument
+            android:name="characterId"
+            app:argType="string" />
+        <argument
+            android:name="aiCount"
+            android:defaultValue="3"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_gameFragment_to_gameOverFragment"
+            app:destination="@id/gameOverFragment"
+            app:popUpTo="@id/homeFragment" />
+        <action
+            android:id="@+id/action_gameFragment_to_rulesFragment"
+            app:destination="@id/rulesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gameOverFragment"
+        android:name="fr.epita.thecullinggames.ui.gameover.GameOverFragment"
+        android:label="@string/label_game_over"
+        tools:layout="@layout/fragment_game_over">
+        <argument
+            android:name="humanWon"
+            app:argType="boolean" />
+        <argument
+            android:name="winnerName"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="humanVp"
+            app:argType="integer" />
+        <argument
+            android:name="humanHp"
+            app:argType="integer" />
+        <argument
+            android:name="turns"
+            app:argType="integer" />
+        <argument
+            android:name="characterId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_gameOverFragment_to_characterSelectFragment"
+            app:destination="@id/characterSelectFragment"
+            app:popUpTo="@id/homeFragment" />
+    </fragment>
+
+</navigation>

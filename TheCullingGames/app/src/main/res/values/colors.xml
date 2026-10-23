@@ -2,4 +2,21 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Cursed energy palette: deep night purple, Infinity blue, Wickedness red, gold for points -->
+    <color name="cursed_background">#FF0E0B16</color>
+    <color name="cursed_surface">#FF1A1426</color>
+    <color name="cursed_surface_high">#FF261D38</color>
+    <color name="cursed_outline">#FF4A3B66</color>
+    <color name="cursed_purple">#FF9B6BFF</color>
+    <color name="cursed_purple_dark">#FF4B2A99</color>
+    <color name="infinity_blue">#FF5EC8FF</color>
+    <color name="wickedness_red">#FFE5394E</color>
+    <color name="points_gold">#FFF2C14E</color>
+    <color name="heal_green">#FF4ED39A</color>
+    <color name="energy_cyan">#FF3FE0D0</color>
+    <color name="text_primary">#FFF3EEFF</color>
+    <color name="text_secondary">#FFB8AED1</color>
+    <color name="die_face">#FFF3EEFF</color>
+    <color name="die_text">#FF1A1426</color>
 </resources>
