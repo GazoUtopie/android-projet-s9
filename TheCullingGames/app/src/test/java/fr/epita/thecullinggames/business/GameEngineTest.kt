@@ -14,6 +14,10 @@ import fr.epita.thecullinggames.business.model.DieFace.TWO
 import fr.epita.thecullinggames.business.model.GameCommand
 import fr.epita.thecullinggames.business.model.PendingChoice
 import fr.epita.thecullinggames.business.model.Phase
+import fr.epita.thecullinggames.business.model.PurchaseBlock
+import fr.epita.thecullinggames.business.model.TargetOption
+import fr.epita.thecullinggames.business.model.GameEvent
+import fr.epita.thecullinggames.business.model.Source
 import fr.epita.thecullinggames.business.model.ResolveGroup
 import fr.epita.thecullinggames.business.model.TileId
 import fr.epita.thecullinggames.data.CardCatalog
@@ -50,6 +54,12 @@ class GameEngineTest {
 
     private fun GameEngine.resolve(group: ResolveGroup) = ok(GameCommand.Resolve(me, group))
 
+    /** Plays a roll without triple nor claw and resolves it: the player reaches the purchases. */
+    private fun GameEngine.toBuyPhase() {
+        rollFaces(TWO, TWO, THREE, THREE, ONE, ENERGY)
+        resolveAll()
+    }
+
     private fun GameEngine.resolveAll() {
         while (state.phase == Phase.RESOLVING && state.pending == null) {
             ok(GameCommand.Resolve(me, remainingGroups().first()))
@@ -66,6 +76,37 @@ class GameEngineTest {
         game.resolveAll()
         assertEquals(4, player.vp - (if (game.state.tokyoId == player.id) 1 else 0))
         assertEquals(2, player.energy)
+    }
+
+    @Test
+    fun `four twos give 3 points, the 4th point seen in game is the Tokyo entry with its own source`() {
+        val game = newGame()
+        val player = game.state.active
+        game.state.tokyoId = null
+        game.rollFaces(TWO, TWO, TWO, TWO, ENERGY, HEART)
+        game.resolveAll()
+        val gains = game.state.log.filterIsInstance<GameEvent.VpChanged>().filter { it.playerId == player.id }
+        assertEquals(
+            listOf(
+                GameEvent.VpChanged(player.id, 3, Source.Triple(2, 4)),
+                GameEvent.VpChanged(player.id, 1, Source.TokyoEntry),
+            ),
+            gains,
+        )
+        assertEquals(4, player.vp)
+    }
+
+    @Test
+    fun `with Cybercerveau on a two, four twos count as five dice`() {
+        val game = newGame()
+        val player = game.state.active
+        game.state.tokyoId = game.other().id // no Tokyo entry this time
+        player.tiles += TileId.CYBERCERVEAU
+        player.cyberBrainReady = true
+        game.rollFaces(TWO, TWO, TWO, TWO, ENERGY, HEART)
+        game.ok(GameCommand.UseCyberBrain(player.id, 0))
+        game.resolve(ResolveGroup.NUMBERS)
+        assertEquals(GameEvent.VpChanged(player.id, 4, Source.Triple(2, 5)), game.state.log.filterIsInstance<GameEvent.VpChanged>().last())
     }
 
     @Test
@@ -203,17 +244,44 @@ class GameEngineTest {
     }
 
     @Test
-    fun `twenty points win at the end of the turn`() {
+    fun `twenty points win immediately, in the middle of the turn`() {
         val game = newGame()
         val player = game.state.active
         player.vp = 19
         game.rollFaces(ONE, ONE, ONE, ENERGY, TWO, THREE)
+        game.resolve(ResolveGroup.NUMBERS)
+        assertEquals(Phase.GAME_OVER, game.state.phase) // no need to finish the turn
+        assertEquals(player.id, game.state.winnerId)
+        assertNull(game.decider)
+    }
+
+    @Test
+    fun `the Tokyo start bonus can win the game at the start of the turn`() {
+        val game = newGame()
+        val player = game.state.active
+        val next = game.other()
+        next.vp = 18
+        game.state.tokyoId = next.id
+        game.rollFaces(TWO, TWO, THREE, THREE, ONE, ENERGY)
         game.resolveAll()
-        game.state.pending?.let { game.ok(GameCommand.ChooseTile(player.id, (it as PendingChoice.ChooseTile).options.first())) }
-        assertEquals(Phase.BUY, game.state.phase) // not won yet: checked at the end of the turn
         game.ok(GameCommand.EndTurn(player.id))
         assertEquals(Phase.GAME_OVER, game.state.phase)
-        assertEquals(player.id, game.state.winnerId)
+        assertEquals(next.id, game.state.winnerId)
+    }
+
+    @Test
+    fun `the last survivor wins immediately`() {
+        val game = newGame(players = 3)
+        // The human attacks from Tokyo: eliminating both AIs leaves them alone.
+        val human = game.state.human
+        game.state.activeId = human.id
+        val ais = game.state.players.filter { !it.isHuman }
+        ais.forEach { it.hp = 1 }
+        game.state.tokyoId = human.id
+        game.rollFaces(CLAW, ENERGY, ENERGY, TWO, THREE, ONE)
+        game.resolve(ResolveGroup.CLAWS)
+        assertEquals(Phase.GAME_OVER, game.state.phase)
+        assertEquals(human.id, game.state.winnerId)
     }
 
     @Test
@@ -253,68 +321,131 @@ class GameEngineTest {
         player.powers += CardId.INCANTATION
         player.energy = 1
         game.state.maxRolls = 4 // as computed at the start of the turn with Sournois
-        repeat(4) { game.ok(GameCommand.Roll(player.id)) }
+        game.ok(GameCommand.Roll(player.id))
+        repeat(3) {
+            game.ok(GameCommand.ToggleKeep(player.id, 0)) // release one die to reroll it
+            game.ok(GameCommand.Roll(player.id))
+        }
         assertFalse(GameCommand.Roll(player.id) in game.legalCommands(player.id))
         game.ok(GameCommand.UseIncantation(player.id))
+        game.ok(GameCommand.ToggleKeep(player.id, 0))
         game.ok(GameCommand.Roll(player.id))
         assertEquals(5, game.state.rollsUsed)
         assertEquals(0, player.energy)
     }
 
     @Test
-    fun `kept dice are not rerolled and can be taken back`() {
+    fun `after a roll every die is kept and only released dice are rerolled`() {
         val game = newGame()
         val player = game.state.active
         game.ok(GameCommand.Roll(player.id))
-        game.ok(GameCommand.ToggleKeep(player.id, 0))
-        val kept = game.state.dice[0]
-        game.ok(GameCommand.Roll(player.id))
-        assertEquals(kept, game.state.dice[0])
+        assertTrue(game.state.dice.all { it.kept })
+        assertFalse(GameCommand.Roll(player.id) in game.legalCommands(player.id)) // nothing to reroll
         game.ok(GameCommand.ToggleKeep(player.id, 0))
         assertFalse(game.state.dice[0].kept)
+        val others = game.state.dice.drop(1)
+        game.ok(GameCommand.Roll(player.id))
+        assertEquals(others, game.state.dice.drop(1))
+        assertTrue(game.state.dice.all { it.kept })
     }
 
     @Test
-    fun `buying replaces the card, Repaire malefique lowers the price`() {
+    fun `Nanami's overtime is not triggered by claws rolled without a target`() {
+        val game = newGame()
+        val player = game.state.active
+        player.powers += CardId.NANAMI_OVERTIME
+        game.state.tokyoId = null
+        game.rollFaces(CLAW, CLAW, ENERGY, TWO, THREE, ONE) // outside with Tokyo empty: no target
+        game.resolveAll()
+        game.ok(GameCommand.EndTurn(player.id))
+        assertEquals(1, player.energy) // the Energy face only
+        assertEquals(1, player.vp) // the Tokyo entry only
+    }
+
+    @Test
+    fun `Nanami's overtime is triggered by a last roll without claw`() {
+        val game = newGame()
+        val player = game.state.active
+        player.powers += CardId.NANAMI_OVERTIME
+        game.state.tokyoId = null
+        game.rollFaces(ENERGY, TWO, THREE, ONE, HEART, HEART)
+        game.resolveAll()
+        game.ok(GameCommand.EndTurn(player.id))
+        assertEquals(2, player.energy) // Energy face + Nanami
+        assertEquals(2, player.vp) // Tokyo entry + Nanami
+    }
+
+    @Test
+    fun `Nanami's overtime reads the dice at validation, a later 10 Shadows keeps the bonus`() {
+        val game = newGame()
+        val player = game.state.active
+        player.powers += CardId.NANAMI_OVERTIME
+        player.powers += CardId.TEN_SHADOWS
+        game.state.tokyoId = null
+        game.rollFaces(ONE, TWO, THREE, ENERGY, HEART, HEART)
+        game.ok(GameCommand.UseTenShadows(player.id, 0)) // after validation: the 1 becomes a Claw
+        game.resolveAll()
+        game.ok(GameCommand.EndTurn(player.id))
+        assertEquals(2, player.vp) // Tokyo entry + Nanami
+    }
+
+    @Test
+    fun `buying replaces the card, Repaire malefique lowers the price, a Power is active at once`() {
         val game = newGame()
         val player = game.state.active
         player.tiles += TileId.REPAIRE_MALEFIQUE
-        game.rollFaces(TWO, TWO, THREE, THREE, ONE, ENERGY)
-        game.resolveAll()
+        game.toBuyPhase()
+        game.state.market[0] = CardId.VEIL
         player.energy = 10
-        val card = game.state.market.first()
-        game.ok(GameCommand.BuyCard(player.id, card))
-        assertEquals(10 - (game.cardDef(card).cost - 1), player.energy)
-        assertTrue(card in player.hand)
+        game.ok(GameCommand.BuyCard(player.id, CardId.VEIL))
+        assertEquals(10 - 3, player.energy)
+        assertTrue(player.has(CardId.VEIL))
         assertEquals(3, game.state.market.size)
-        assertFalse(card in game.state.market)
+        assertFalse(CardId.VEIL in game.state.market)
     }
 
     @Test
-    fun `Mahoraga heals on purchase and raises the maximum on activation`() {
+    fun `Mahoraga raises the maximum first, then heals 2 at purchase`() {
         val game = newGame()
         val player = game.state.active
-        game.rollFaces(TWO, TWO, THREE, THREE, ONE, ENERGY)
-        game.resolveAll()
+        game.toBuyPhase()
         game.state.market[0] = CardId.MAHORAGA_ADAPTATION
         player.energy = 5
-        player.hp = 7
+        player.hp = 9
         game.ok(GameCommand.BuyCard(player.id, CardId.MAHORAGA_ADAPTATION))
-        assertEquals(9, player.hp)
-        game.ok(GameCommand.ActivatePower(player.id, CardId.MAHORAGA_ADAPTATION))
         assertEquals(12, player.maxHp)
+        assertEquals(11, player.hp)
     }
 
     @Test
-    fun `used Actions go to the discard pile`() {
+    fun `an Action resolves at purchase and goes to the discard pile`() {
         val game = newGame()
         val player = game.state.active
-        player.hand += CardId.OVERFLOWING_ENERGY
+        game.toBuyPhase()
+        game.state.market[0] = CardId.OVERFLOWING_ENERGY
+        player.energy = 3
         player.hp = 5
-        game.ok(GameCommand.PlayAction(player.id, CardId.OVERFLOWING_ENERGY))
+        game.ok(GameCommand.BuyCard(player.id, CardId.OVERFLOWING_ENERGY))
         assertEquals(8, player.hp)
         assertTrue(CardId.OVERFLOWING_ENERGY in game.state.discard)
-        assertFalse(CardId.OVERFLOWING_ENERGY in player.hand)
+    }
+
+    @Test
+    fun `an Action with several targets asks for the target at purchase`() {
+        val game = newGame()
+        val player = game.state.active
+        val occupant = game.other()
+        game.state.tokyoId = occupant.id
+        game.toBuyPhase()
+        game.state.market[0] = CardId.VIOLET
+        player.energy = 4
+        game.ok(GameCommand.BuyCard(player.id, CardId.VIOLET))
+        val pending = game.state.pending as PendingChoice.CardTargets
+        assertEquals(game.state.players.size - 1, pending.options.size)
+        game.ok(GameCommand.ChooseCardTarget(player.id, TargetOption(target = occupant.id)))
+        assertEquals(8, occupant.hp)
+        assertNull(game.state.pending)
+        assertEquals(Phase.BUY, game.state.phase)
     }
 
     @Test
@@ -323,8 +454,10 @@ class GameEngineTest {
         val player = game.state.active
         val occupant = game.other()
         game.state.tokyoId = occupant.id
-        player.hand += CardId.BOOGIE_WOOGIE
-        game.ok(GameCommand.PlayAction(player.id, CardId.BOOGIE_WOOGIE, target = occupant.id))
+        game.toBuyPhase()
+        game.state.market[0] = CardId.BOOGIE_WOOGIE
+        player.energy = 2
+        game.ok(GameCommand.BuyCard(player.id, CardId.BOOGIE_WOOGIE)) // single target: applied at once
         assertEquals(player.id, game.state.tokyoId)
         assertEquals(1, occupant.vp)
         assertEquals(0, player.vp)
@@ -332,41 +465,55 @@ class GameEngineTest {
 
     @Test
     fun `Boogie Woogie from Tokyo sends an opponent in, the leaver gains a point`() {
-        val game = newGame()
+        val game = newGame(players = 2)
         val player = game.state.active
         val other = game.other()
-        game.state.tokyoId = player.id
-        player.hand += CardId.BOOGIE_WOOGIE
-        game.ok(GameCommand.PlayAction(player.id, CardId.BOOGIE_WOOGIE, target = other.id))
+        game.toBuyPhase() // enters the empty Tokyo (2 players: Energy, no point)
+        game.state.market[0] = CardId.BOOGIE_WOOGIE
+        player.energy = 2
+        game.ok(GameCommand.BuyCard(player.id, CardId.BOOGIE_WOOGIE))
         assertEquals(other.id, game.state.tokyoId)
         assertEquals(1, player.vp)
         assertEquals(0, other.vp)
     }
 
     @Test
-    fun `market is refilled as soon as the discard pile is reshuffled`() {
+    fun `Actions whose condition is not met cannot be bought`() {
         val game = newGame()
         val player = game.state.active
-        game.rollFaces(TWO, TWO, THREE, THREE, ONE, ENERGY)
-        game.resolveAll()
-        game.state.deck.clear()
-        game.state.discard.clear()
+        game.state.tokyoId = null
         player.energy = 10
-        game.ok(GameCommand.BuyCard(player.id, game.state.market.first()))
-        assertEquals(2, game.state.market.size) // nothing left to draw
-        val heal = listOf(CardId.OVERFLOWING_ENERGY, CardId.REVERSE_CURSED_TECHNIQUE).first { it !in game.state.market }
-        player.hand += heal
-        game.ok(GameCommand.PlayAction(player.id, heal))
-        assertEquals(3, game.state.market.size)
-        assertTrue(heal in game.state.market)
+        game.ok(GameCommand.Roll(player.id))
+        assertEquals(PurchaseBlock.NOT_BUY_PHASE, game.purchaseBlock(player.id, CardId.TALISMAN))
+        game.state.dice = listOf(TWO, TWO, THREE, THREE, ONE, ENERGY).map { Die(it) }
+        game.ok(GameCommand.StopRolling(player.id))
+        game.resolveAll() // no triple; the player enters the empty Tokyo
+        assertEquals(PurchaseBlock.NO_TRIPLE, game.purchaseBlock(player.id, CardId.BLACK_FLASH))
+        game.state.tokyoId = null
+        assertEquals(PurchaseBlock.TOKYO_EMPTY, game.purchaseBlock(player.id, CardId.BOOGIE_WOOGIE))
+        player.hp = 1
+        assertEquals(PurchaseBlock.ONE_HP, game.purchaseBlock(player.id, CardId.BLOOD_MANIPULATION))
+        player.energy = 0
+        assertEquals(PurchaseBlock.NOT_ENOUGH_ENERGY, game.purchaseBlock(player.id, CardId.TALISMAN))
+        game.state.market[0] = CardId.BLACK_FLASH
+        assertFalse(GameCommand.BuyCard(player.id, CardId.BLACK_FLASH) in game.legalCommands(player.id))
     }
 
     @Test
-    fun `Boogie Woogie is not playable when Tokyo is empty`() {
+    fun `market is refilled as soon as the discard pile is reshuffled`() {
         val game = newGame()
         val player = game.state.active
-        player.hand += CardId.BOOGIE_WOOGIE
-        assertTrue(game.legalCommands(player.id).none { it is GameCommand.PlayAction })
+        game.toBuyPhase()
+        game.state.deck.clear()
+        game.state.discard.clear()
+        game.state.market.clear()
+        game.state.market += listOf(CardId.VEIL, CardId.OVERFLOWING_ENERGY, CardId.SPECIAL_GRADE)
+        player.energy = 10
+        game.ok(GameCommand.BuyCard(player.id, CardId.VEIL))
+        assertEquals(2, game.state.market.size) // nothing left to draw
+        game.ok(GameCommand.BuyCard(player.id, CardId.OVERFLOWING_ENERGY)) // used, then discarded and reshuffled
+        assertEquals(2, game.state.market.size)
+        assertTrue(CardId.OVERFLOWING_ENERGY in game.state.market)
     }
 
     @Test

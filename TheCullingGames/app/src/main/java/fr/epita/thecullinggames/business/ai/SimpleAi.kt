@@ -2,7 +2,6 @@ package fr.epita.thecullinggames.business.ai
 
 import fr.epita.thecullinggames.business.engine.GameEngine
 import fr.epita.thecullinggames.business.model.CardId
-import fr.epita.thecullinggames.business.model.CardType
 import fr.epita.thecullinggames.business.model.DieFace
 import fr.epita.thecullinggames.business.model.GameCommand
 import fr.epita.thecullinggames.business.model.PendingChoice
@@ -19,6 +18,7 @@ class SimpleAi {
 
     /** Turn number in which this AI already renewed the market (avoids endless refreshes). */
     private val refreshedOnTurn = mutableMapOf<Int, Int>()
+    private val talismanOnTurn = mutableMapOf<Int, Int>()
 
     fun decide(engine: GameEngine, playerId: Int): GameCommand {
         val legal = engine.legalCommands(playerId)
@@ -28,6 +28,7 @@ class SimpleAi {
             is PendingChoice.Infinity -> GameCommand.AnswerInfinity(playerId, pending.damage >= 2 || pending.damage >= me.hp)
             is PendingChoice.Flee -> GameCommand.AnswerFlee(playerId, me.hp <= FLEE_HP)
             is PendingChoice.ChooseTile -> GameCommand.ChooseTile(playerId, pending.options.minBy { TILE_PRIORITY.indexOf(it) })
+            is PendingChoice.CardTargets -> chooseTarget(engine, me, pending)
             null -> when (engine.state.phase) {
                 Phase.ROLLING -> rolling(engine, me, legal)
                 Phase.RESOLVING -> resolving(engine, me, legal)
@@ -49,7 +50,7 @@ class SimpleAi {
         val roll = GameCommand.Roll(me.id)
         if (roll in legal) return roll
         val incantation = GameCommand.UseIncantation(me.id)
-        if (incantation in legal && me.energy >= 3 && state.dice.any { !it.kept }) return incantation
+        if (incantation in legal && me.energy >= 3 && state.dice.indices.any { it !in wanted }) return incantation
         return GameCommand.StopRolling(me.id)
     }
 
@@ -91,41 +92,14 @@ class SimpleAi {
 
     private fun buying(engine: GameEngine, me: PlayerState, legal: List<GameCommand>): GameCommand {
         val state = engine.state
-        val opponents = state.alivePlayers.filter { it.id != me.id }
-        val weakest = opponents.minByOrNull { it.hp }
-        val actions = legal.filterIsInstance<GameCommand.PlayAction>()
-
-        legal.filterIsInstance<GameCommand.ActivatePower>()
-            .firstOrNull { it.card != CardId.SUKUNA_FINGER || me.hp > 6 }
-            ?.let { return it }
-
-        for (action in actions) {
-            val useful = when (action.card) {
-                CardId.REVERSE_CURSED_TECHNIQUE -> me.hp <= me.maxHp - 4 || me.hp <= 4
-                CardId.OVERFLOWING_ENERGY -> me.hp <= me.maxHp - 3 || me.hp <= 4
-                CardId.DIVERGENT_FIST, CardId.BLACK_FLASH -> true
-                CardId.VIOLET -> action.target == weakest?.id ||
-                    (action.allocation.isNotEmpty() && action.allocation[weakest?.id] == engine.rules.violetTokyoTotal)
-                CardId.BLOOD_MANIPULATION -> me.hp >= 6 && action.target == opponents.filter { it.id != state.tokyoId }.minByOrNull { it.hp }?.id
-                CardId.RESONANCE -> action.target == opponents.maxByOrNull { it.energy }?.id &&
-                    state.player(action.target!!).energy >= 2
-                // Outside: take Tokyo when healthy. Inside: escape when hurt, sending the weakest opponent in.
-                CardId.BOOGIE_WOOGIE -> if (state.tokyoId == me.id) {
-                    me.hp <= FLEE_HP && action.target == weakest?.id
-                } else {
-                    me.hp >= 7
-                }
-                CardId.TALISMAN -> legal.none { it is GameCommand.BuyCard }
-                else -> false
-            }
-            if (useful) return action
-        }
-
+        // Cards are used at purchase: only buy what is useful right now.
         val purchase = legal.filterIsInstance<GameCommand.BuyCard>()
-            .filter { engine.cardDef(it.card).type == CardType.ACTION || it.card !in UNWANTED_POWERS }
+            .filter { worthBuying(engine, me, it.card) }
             .maxByOrNull { engine.cardDef(it.card).cost }
-        if (purchase != null) return purchase
-        if (GameCommand.BuyTopOfDeck(me.id) in legal) return GameCommand.BuyTopOfDeck(me.id)
+        if (purchase != null) {
+            if (purchase.card == CardId.TALISMAN) talismanOnTurn[me.id] = state.turnNumber
+            return purchase
+        }
 
         val refresh = GameCommand.RefreshMarket(me.id)
         if (refresh in legal && me.energy >= 7 && refreshedOnTurn[me.id] != state.turnNumber) {
@@ -133,6 +107,36 @@ class SimpleAi {
             return refresh
         }
         return GameCommand.EndTurn(me.id)
+    }
+
+    private fun worthBuying(engine: GameEngine, me: PlayerState, card: CardId): Boolean {
+        val state = engine.state
+        return when (card) {
+            CardId.REVERSE_CURSED_TECHNIQUE -> me.hp <= me.maxHp - 4 || me.hp <= 4
+            CardId.OVERFLOWING_ENERGY -> me.hp <= me.maxHp - 3 || me.hp <= 4
+            CardId.BLOOD_MANIPULATION -> me.hp >= 6
+            CardId.RESONANCE -> state.alivePlayers.any { it.id != me.id && it.energy >= 2 }
+            // Outside: take Tokyo when healthy. Inside: escape when hurt.
+            CardId.BOOGIE_WOOGIE -> if (state.tokyoId == me.id) me.hp <= FLEE_HP else me.hp >= 7
+            // Talisman can pay for itself with Repaire maléfique: once per turn at most.
+            CardId.TALISMAN -> talismanOnTurn[me.id] != state.turnNumber
+            CardId.SUKUNA_FINGER -> me.hp > 6
+            in UNWANTED_POWERS -> false
+            else -> true
+        }
+    }
+
+    /** Target of an Action just bought: the weakest opponent, the richest for Resonance. */
+    private fun chooseTarget(engine: GameEngine, me: PlayerState, pending: PendingChoice.CardTargets): GameCommand {
+        val state = engine.state
+        val weakest = state.alivePlayers.filter { it.id != me.id }.minBy { it.hp }.id
+        val option = when (pending.card) {
+            CardId.RESONANCE -> pending.options.maxBy { state.player(it.target!!).energy }
+            // Violet: everything on the weakest opponent (single target, or the whole split from Tokyo).
+            CardId.VIOLET -> pending.options.maxBy { it.allocation[weakest] ?: if (it.target == weakest) 1 else 0 }
+            else -> pending.options.minBy { state.player(it.target!!).hp }
+        }
+        return GameCommand.ChooseCardTarget(me.id, option)
     }
 
     private companion object {

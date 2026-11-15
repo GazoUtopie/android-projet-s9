@@ -24,6 +24,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
+import org.robolectric.shadows.ShadowDialog
+import android.widget.Button
+import org.junit.Assert.assertFalse
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.io.File
@@ -97,15 +100,35 @@ class GameFlowUiTest {
         }
 
         var rotated = false
+        var profileChecked = false
+        var sawBanner = false
         var steps = 0
         while (steps++ < 4000) {
             val engine = ServiceLocator.gameRepository.current() ?: break
             val viewModel = ViewModelProvider(gameFragment() ?: break)[GameViewModel::class.java]
             val ui = viewModel.state.value
             if (ui.isOver) break
+            if (activity.findViewById<View>(R.id.banner).isShown) {
+                sawBanner = true
+                shotOnce("09_feedback_banner")
+            }
             if (!ui.isHumanDecision) {
                 idle(800) // let the AIs play
                 continue
+            }
+
+            // Tapping a player of the strip opens their profile.
+            if (!profileChecked) {
+                profileChecked = true
+                val strip = activity.findViewById<RecyclerView>(R.id.players)
+                strip.findViewHolderForAdapterPosition(1)!!.itemView.performClick()
+                idle()
+                val profile = ShadowDialog.getLatestDialog()
+                assertTrue(profile.isShowing)
+                assertTrue(profile.findViewById<View>(R.id.wickedness_gauge).isShown)
+                shot("10_profile")
+                profile.dismiss()
+                idle()
             }
             if (ui.humanPending != null) shotOnce("07_decision_dialog")
             when (ui.phase) {
@@ -118,7 +141,19 @@ class GameFlowUiTest {
             // Rotation in the middle of the human's turn: the game must survive.
             if (!rotated && ui.phase == Phase.ROLLING && ui.hasRolled) {
                 rotated = true
+                // Dice selection is inverted: everything is kept, the player taps the dice to reroll.
+                val roll = activity.findViewById<Button>(R.id.btn_roll)
+                assertTrue(ui.dice.all { it.kept })
+                assertFalse(roll.isEnabled)
+                assertTrue(roll.text.toString().endsWith("(0)"))
+                click(R.id.die_0)
+                assertTrue(roll.isEnabled)
+                assertTrue(roll.text.toString().endsWith("(1)"))
+                click(R.id.die_0)
+                assertFalse(roll.isEnabled)
+
                 val rollsBefore = ui.rollsUsed
+                val feedbackBefore = viewModel.feedback.value
                 RuntimeEnvironment.setQualifiers("w891dp-h411dp-land-xxhdpi")
                 scenario.recreate()
                 refreshActivity()
@@ -126,6 +161,10 @@ class GameFlowUiTest {
                 shot("04b_rolled_landscape")
                 val after = ViewModelProvider(gameFragment()!!)[GameViewModel::class.java].state.value
                 assertEquals(rollsBefore, after.rollsUsed)
+                // The feedback queue lives in the ViewModel: the current item is kept, not restarted.
+                val vmAfter = ViewModelProvider(gameFragment()!!)[GameViewModel::class.java]
+                assertEquals(feedbackBefore?.id ?: -1L, vmAfter.feedback.value?.id ?: -1L)
+                feedbackBefore?.let { assertEquals(it.id, vmAfter.displayedFeedbackId) }
                 assertEquals(engine, ServiceLocator.gameRepository.current())
                 RuntimeEnvironment.setQualifiers("w411dp-h891dp-port-xxhdpi")
                 scenario.recreate()
@@ -149,6 +188,7 @@ class GameFlowUiTest {
         }
 
         assertTrue("game did not end", ServiceLocator.gameRepository.current()?.isOver != false)
+        assertTrue("no Tokyo or purchase banner was shown", sawBanner)
         idle(2500) // result delay then navigation
         refreshActivity()
         shot("08_game_over")

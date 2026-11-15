@@ -18,7 +18,7 @@ Adaptation de **King of Tokyo** (Dark Edition, avec les tuiles Méchanceté) dan
 ## Déroulement d’une partie
 
 Accueil → choix du sorcier et du nombre d’IA (1 à 3) → partie → écran de victoire ou de défaite → nouvelle partie.
-Pendant la partie : lancer les dés (3 lancers, dés conservables et reprenables), les résoudre dans l’ordre choisi, entrer dans la colonie de Tokyo si elle est vide, acheter et jouer des techniques, choisir les tuiles de Méchanceté aux seuils 3 / 6 / 10. Les réactions (Infinity, fuite de Tokyo) sont demandées au joueur pendant les tours adverses. Les règles et toutes les cartes sont consultables depuis l’accueil et pendant la partie (menu « Règles »).
+Pendant la partie : lancer les dés (3 lancers ; après chaque lancer tous les dés sont gardés et l’on touche ceux à relancer), les résoudre dans l’ordre choisi, choisir les tuiles de Méchanceté aux seuils 3 / 6 / 10, entrer dans la colonie de Tokyo si elle est vide, puis acheter des techniques : chaque carte s’utilise dès l’achat (Pouvoir actif tout de suite, Action appliquée immédiatement, avec choix de la cible si besoin). La partie s’arrête dès qu’un sorcier atteint 20 ★ ou reste seul en vie. Les réactions (Infinity, fuite de Tokyo) sont demandées au joueur pendant les tours adverses. Les entrées et sorties de Tokyo, les achats (avec leur effet) et les tuiles choisies s’affichent dans une courte notification non bloquante ; un appui sur un joueur ouvre son profil, un appui long sur une carte du marché, un Pouvoir ou une tuile montre son effet. Les règles et toutes les cartes sont consultables depuis l’accueil et pendant la partie (menu « Règles »).
 
 ## Architecture
 
@@ -51,7 +51,7 @@ Chemins relatifs à `TheCullingGames/app/src/main/java/fr/epita/thecullinggames/
 | Spécification | Code |
 | --- | --- |
 | Tour de jeu, dés, résolution, Tokyo, victoire (`docs/KOT_WICKEDNESS.md`) | `business/engine/GameEngine.kt` |
-| 20 cartes Énergie (`docs/Rules-Cards`) | prix et types : `data/Catalogs.kt` (`CardCatalog`) ; effets : `GameEngine.playAction`, `activatePower`, `DamageCalculator.kt` ; textes et images : `res/values/strings.xml`, `ui/common/Visuals.kt` |
+| 20 cartes Énergie (`docs/Rules-Cards`) | prix et types : `data/Catalogs.kt` (`CardCatalog`) ; utilisation à l’achat : `GameEngine.buy`, `purchaseBlock`, `resolveAction`, `DamageCalculator.kt` ; textes et images : `res/values/strings.xml`, `ui/common/Visuals.kt` |
 | 10 tuiles Méchanceté | `TileId` (`business/model/Ids.kt`), `GameEngine.acquireTile` et effets de début de tour / résolution |
 | Conventions de dégâts (`docs/A_CLARIFIER.md`) | `business/engine/DamageCalculator.kt`, `GameEngine.applyDamage`, `RulesConfig.kt` |
 | Un humain contre 1 à 3 IA | `business/ai/SimpleAi.kt`, boucle des IA dans `ui/game/GameViewModel.kt` |
@@ -60,9 +60,10 @@ Chemins relatifs à `TheCullingGames/app/src/main/java/fr/epita/thecullinggames/
 
 ## Tests
 
-- `app/src/test/.../business/GameEngineTest.kt` : 25 tests de règles (brelans, Méchanceté et tuiles, Tokyo à 2 et à 3-4 joueurs, soins, Binding Vow, Infinity, Domain Expansion, Veil + Special Grade, Cybercerveau, Sournois + Incantation, marché maintenu à trois cartes, Mahoraga, recyclage des Actions, Boogie Woogie dans les deux sens, Divergent Fist, Panique générale, élimination du joueur humain, victoire en fin de tour, commandes illégales).
+- `app/src/test/.../business/GameEngineTest.kt` : 33 tests de règles (brelans, Méchanceté et tuiles, Tokyo à 2 et à 3-4 joueurs, soins, Binding Vow, Infinity, Domain Expansion, Veil + Special Grade, Cybercerveau, Sournois + Incantation, marché maintenu à trois cartes, Mahoraga, recyclage des Actions, Boogie Woogie dans les deux sens, cartes utilisées à l’achat et achats impossibles, victoire immédiate, gain de points d’un brelan de quatre, Nanami's overtime, dés gardés par défaut, Divergent Fist, Panique générale, élimination du joueur humain, victoire en fin de tour, commandes illégales).
+- `ui/FeedbackBuilderTest.kt` : notifications construites uniquement à partir des événements du moteur.
 - `AiSimulationTest.kt` : 600 parties entre IA (2 à 4 joueurs) doivent toutes se terminer sans commande illégale.
-- `ui/GameFlowUiTest.kt` (Robolectric) : parcours complet accueil → choix du sorcier → partie jouée par les vrais boutons → rotation pendant le tour → écran de fin.
+- `ui/GameFlowUiTest.kt` (Robolectric) : parcours complet accueil → choix du sorcier → partie jouée par les vrais boutons (sélection des dés à relancer, profil d’un joueur, notifications) → rotation pendant le tour → écran de fin.
 
 Sur 400 parties simulées par format, une partie dure environ 8 à 9 tours par joueur.
 
@@ -70,7 +71,9 @@ Sur 400 parties simulées par format, une partie dure environ 8 à 9 tours par j
 
 - Les règles encore ouvertes ou provisoires sont listées dans `docs/A_CLARIFIER.md` (section « Conventions retenues dans l’implémentation »).
 - Les capacités propres aux personnages sont reportées (spécification) : les quatre sorciers ont les mêmes règles.
-- L’IA est volontairement simple (heuristiques) ; elle n’achète pas Maki’s glasses.
+- L’IA est volontairement simple (heuristiques) ; elle n’achète pas Maki’s glasses et peut paraître forte à plusieurs contre un joueur dans Tokyo.
+- Une Action dont la condition n’est pas remplie n’est pas achetable : elle reste grisée au marché, la raison est sur sa fiche.
+- Les durées des notifications n’ont été réglées qu’en test automatique, pas encore sur appareil.
 - Pas de sauvegarde : quitter la partie (retour, avec confirmation) ou arrêter l’application la perd.
 
 ## Organisation

@@ -16,10 +16,7 @@ class PlayerState(
     var wickedness = 0
     var alive = true
 
-    /** Bought cards not used yet (Actions and inactive Powers). */
-    val hand = mutableListOf<CardId>()
-
-    /** Activated Powers: permanent until elimination. */
+    /** Powers, active from their purchase until elimination (cards are used as soon as they are bought). */
     val powers = mutableSetOf<CardId>()
 
     /** Acquired Wickedness tiles (Panique générale is discarded right after its effect). */

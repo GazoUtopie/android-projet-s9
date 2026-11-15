@@ -12,7 +12,10 @@ enum class DieFace { ONE, TWO, THREE, ENERGY, HEART, CLAW;
         }
 }
 
-/** One of the six base dice. A kept die is not rerolled but can be released before a later roll. */
+/**
+ * One of the six base dice. A kept die is not rerolled. After each roll every die is kept by default:
+ * the player releases ("à relancer") the dice to reroll.
+ */
 data class Die(val face: DieFace, val kept: Boolean = false)
 
 /** Face groups the player resolves one by one, in the order of their choice. */

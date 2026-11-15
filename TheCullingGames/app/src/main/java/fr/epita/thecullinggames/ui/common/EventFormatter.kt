@@ -13,7 +13,7 @@ class EventFormatter(private val context: Context, private val names: (Int) -> S
 
     fun source(source: Source): String = when (source) {
         Source.Dice -> s(R.string.source_dice)
-        Source.Triple -> s(R.string.source_triple)
+        is Source.Triple -> s(R.string.source_triple, source.value, source.dice)
         Source.TokyoEntry -> s(R.string.source_tokyo_entry)
         Source.TokyoStart -> s(R.string.source_tokyo_start)
         Source.Market -> s(R.string.source_market)
@@ -53,7 +53,6 @@ class EventFormatter(private val context: Context, private val names: (Int) -> S
         is GameEvent.TileAcquired -> s(R.string.log_tile, names(event.playerId), s(Visuals.tileName(event.tile)))
         is GameEvent.CardBought -> s(R.string.log_bought, names(event.playerId), s(Visuals.card(event.card).name), event.price)
         is GameEvent.MarketRefreshed -> s(R.string.log_refresh, names(event.playerId))
-        is GameEvent.PowerActivated -> s(R.string.log_power, names(event.playerId), s(Visuals.card(event.card).name))
         is GameEvent.ActionPlayed -> s(R.string.log_action, names(event.playerId), s(Visuals.card(event.card).name))
         is GameEvent.Eliminated -> s(R.string.log_eliminated, names(event.playerId))
         is GameEvent.GameOver -> event.winnerId?.let { s(R.string.log_game_over_winner, names(it)) }

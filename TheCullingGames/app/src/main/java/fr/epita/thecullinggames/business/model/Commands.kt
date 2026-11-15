@@ -18,18 +18,9 @@ sealed interface GameCommand {
     data class BuyCard(override val playerId: Int, val card: CardId) : GameCommand
     data class BuyTopOfDeck(override val playerId: Int) : GameCommand
     data class RefreshMarket(override val playerId: Int) : GameCommand
-    data class ActivatePower(override val playerId: Int, val card: CardId) : GameCommand
 
-    /**
-     * Plays an Action card from the hand.
-     * [target] is used by single-target cards, [allocation] (player id → damage) by Violet from Tokyo.
-     */
-    data class PlayAction(
-        override val playerId: Int,
-        val card: CardId,
-        val target: Int? = null,
-        val allocation: Map<Int, Int> = emptyMap(),
-    ) : GameCommand
+    /** Target chosen for the Action just bought (answer to [PendingChoice.CardTargets]). */
+    data class ChooseCardTarget(override val playerId: Int, val option: TargetOption) : GameCommand
 
     data class AnswerInfinity(override val playerId: Int, val use: Boolean) : GameCommand
     data class AnswerFlee(override val playerId: Int, val flee: Boolean) : GameCommand
@@ -48,4 +39,16 @@ sealed interface PendingChoice {
 
     /** A Wickedness threshold was reached: choose one available tile of this level. */
     data class ChooseTile(override val playerId: Int, val level: Int, val options: List<TileId>) : PendingChoice
+
+    /** An Action was just bought and needs a target or a damage split before it resolves. */
+    data class CardTargets(override val playerId: Int, val card: CardId, val options: List<TargetOption>) : PendingChoice
 }
+
+/**
+ * Target of an Action: [target] for single-target cards, [allocation] (player id → damage) for Violet from Tokyo.
+ * The default value means "no choice needed".
+ */
+data class TargetOption(val target: Int? = null, val allocation: Map<Int, Int> = emptyMap())
+
+/** Why a card cannot be bought now (shown on the card sheet). */
+enum class PurchaseBlock { NOT_BUY_PHASE, NOT_ENOUGH_ENERGY, NO_TRIPLE, TOKYO_EMPTY, ONE_HP, NO_TARGET }

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Phone portrait: one scrolling column. -->
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- The feedback overlay sits on top of the scrolling content and lets touches through. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -23,3 +28,8 @@
             layout="@layout/game_log_panel" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+
+<include
+    android:id="@+id/feedback"
+    layout="@layout/game_feedback_overlay" />
+</FrameLayout>
