@@ -6,6 +6,7 @@ import fr.epita.thecullinggames.business.model.GameCommand
 import fr.epita.thecullinggames.business.model.GameEvent
 import fr.epita.thecullinggames.business.model.PendingChoice
 import fr.epita.thecullinggames.business.model.Phase
+import fr.epita.thecullinggames.business.model.PurchaseBlock
 import fr.epita.thecullinggames.business.model.ResolveGroup
 import fr.epita.thecullinggames.business.model.TileId
 
@@ -23,9 +24,22 @@ data class PlayerUi(
     val alive: Boolean,
     val inTokyo: Boolean,
     val isActive: Boolean,
+    val tiles: List<TileId> = emptyList(),
+    val powers: List<CardId> = emptyList(),
+    val effects: List<PlayerEffect> = emptyList(),
 )
 
-data class MarketCardUi(val card: CardId, val price: Int, val buyable: Boolean)
+/** Effects in progress shown on a player's profile (read from the engine state). */
+enum class PlayerEffect {
+    DIVERGENT_FIST_NEXT_TURN,
+    DIVERGENT_FIST_ACTIVE,
+    INFINITY_USED,
+    SPECIAL_GRADE_USED,
+    CYBER_BRAIN_NEXT_TURN,
+}
+
+/** A market card; [block] says why it cannot be bought now (null when it can). */
+data class MarketCardUi(val card: CardId, val price: Int, val buyable: Boolean, val block: PurchaseBlock?)
 
 /**
  * Everything the game screen displays. [legal] contains the commands the human may send now:
@@ -46,7 +60,7 @@ data class GameUiState(
     val market: List<MarketCardUi> = emptyList(),
     val deckTop: CardId? = null,
     val deckTopPrice: Int = 0,
-    val hand: List<CardId> = emptyList(),
+    val deckTopBlock: PurchaseBlock? = null,
     val powers: List<CardId> = emptyList(),
     val tiles: List<TileId> = emptyList(),
     val wickedness: Int = 0,

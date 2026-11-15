@@ -3,7 +3,8 @@ package fr.epita.thecullinggames.business.model
 /** Origin of a gain or a loss, so the View can explain what happened. */
 sealed interface Source {
     data object Dice : Source
-    data object Triple : Source
+    /** Triple of [value] made with [dice] dice (Cybercerveau included): value + one point per extra die. */
+    data class Triple(val value: Int, val dice: Int) : Source
     data object TokyoEntry : Source
     data object TokyoStart : Source
     data object Market : Source
@@ -29,7 +30,6 @@ sealed interface GameEvent {
     data class TileAcquired(val playerId: Int, val tile: TileId) : GameEvent
     data class CardBought(val playerId: Int, val card: CardId, val price: Int) : GameEvent
     data class MarketRefreshed(val playerId: Int) : GameEvent
-    data class PowerActivated(val playerId: Int, val card: CardId) : GameEvent
     data class ActionPlayed(val playerId: Int, val card: CardId) : GameEvent
     data class Eliminated(val playerId: Int) : GameEvent
     data class GameOver(val winnerId: Int?, val humanWon: Boolean) : GameEvent

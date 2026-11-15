@@ -31,13 +31,11 @@
     <string name="player_stats">♥ %1$d/%2$d   ⚡ %3$d   ★ %4$d</string>
     <string name="section_dice">Dés</string>
     <string name="section_market">Marché des techniques</string>
-    <string name="section_hand">Votre main</string>
     <string name="section_powers">Pouvoirs actifs et tuiles</string>
     <string name="section_log">Journal du combat</string>
     <string name="section_wickedness">Méchanceté : %1$d</string>
-    <string name="hand_empty">Aucune carte en main. Achetez des techniques au marché.</string>
     <string name="powers_empty">Aucun pouvoir actif.</string>
-    <string name="tap_die_hint">Touchez un dé pour le conserver ou le reprendre.</string>
+    <string name="tap_die_hint">Tous les dés sont gardés : touchez ceux à relancer.</string>
 
     <!-- Game: status line -->
     <string name="status_roll">Votre tour — lancez les dés</string>
@@ -51,7 +49,7 @@
 
     <!-- Game: buttons -->
     <string name="action_roll">Lancer</string>
-    <string name="action_reroll">Relancer</string>
+    <string name="action_reroll">Relancer (%1$d)</string>
     <string name="action_stop">Valider les dés</string>
     <string name="action_incantation">Incantation (1⚡)</string>
     <string name="action_ten_shadows">10 Shadows</string>
@@ -60,8 +58,6 @@
     <string name="action_deck_top">Pioche (Maki)</string>
     <string name="action_end_turn">Finir le tour</string>
     <string name="action_buy">Acheter (%1$d⚡)</string>
-    <string name="action_activate">Activer le pouvoir</string>
-    <string name="action_play">Jouer l’action</string>
     <string name="action_close">Fermer</string>
     <string name="action_cancel">Annuler</string>
     <string name="action_yes">Oui</string>
@@ -98,6 +94,35 @@
     <string name="dialog_quit_message">La partie en cours sera perdue (aucune sauvegarde).</string>
     <string name="dialog_quit_yes">Abandonner</string>
 
+    <!-- Why a card cannot be bought -->
+    <string name="block_not_buy_phase">Achat possible pendant votre tour, après la résolution des dés.</string>
+    <string name="block_energy">Pas assez d’Énergie.</string>
+    <string name="block_no_triple">Il faut avoir résolu un brelan de 1, 2 ou 3 ce tour-ci.</string>
+    <string name="block_tokyo_empty">Tokyo est vide : personne avec qui échanger.</string>
+    <string name="block_one_hp">Impossible avec un seul Cœur.</string>
+    <string name="block_no_target">Aucun adversaire hors de Tokyo.</string>
+
+    <!-- Player profile -->
+    <string name="profile_title">%1$s · %2$s</string>
+    <string name="profile_tiles">Tuiles de Méchanceté</string>
+    <string name="profile_powers">Pouvoirs actifs</string>
+    <string name="profile_effects">Effets en cours</string>
+    <string name="profile_none">Aucune</string>
+    <string name="profile_dead">Ce sorcier a été éliminé.</string>
+    <string name="effect_divergent_next">Divergent Fist : actif à son prochain tour</string>
+    <string name="effect_divergent_active">Divergent Fist : actif pendant ce tour</string>
+    <string name="effect_infinity_used">Infinity déjà utilisé ce tour de table</string>
+    <string name="effect_special_grade_used">Special Grade déjà utilisé ce tour de table</string>
+    <string name="effect_cyber_next">Cybercerveau : utilisable à partir de son prochain tour</string>
+    <string name="effects_none">Aucun effet en cours</string>
+    <string name="player_open_profile">Voir le profil de %1$s</string>
+
+    <!-- Feedback (impact texts) -->
+    <string name="impact_hp">%1$+d ♥</string>
+    <string name="impact_energy">%1$+d ⚡</string>
+    <string name="impact_vp">%1$+d ★</string>
+    <string name="peek_hint">Appui long sur une carte : aperçu de son effet</string>
+
     <!-- Game over -->
     <string name="result_victory">Victoire !</string>
     <string name="result_defeat">Défaite…</string>
@@ -116,7 +141,7 @@
     <string name="face_energy">Énergie</string>
     <string name="face_heart">Cœur</string>
     <string name="face_claw">Griffe</string>
-    <string name="die_kept">conservé</string>
+    <string name="die_to_reroll">à relancer</string>
 
     <!-- Log -->
     <string name="log_first_player">%1$s commence la partie (le plus de Griffes).</string>
@@ -138,14 +163,13 @@
     <string name="log_tile">%1$s acquiert la tuile %2$s</string>
     <string name="log_bought">%1$s achète %2$s pour %3$d ⚡</string>
     <string name="log_refresh">%1$s renouvelle le marché</string>
-    <string name="log_power">%1$s active le pouvoir %2$s</string>
     <string name="log_action">%1$s joue %2$s</string>
     <string name="log_eliminated">%1$s est éliminé !</string>
     <string name="log_game_over_winner">Fin de partie : %1$s l’emporte.</string>
     <string name="log_game_over_none">Fin de partie : aucun vainqueur.</string>
 
     <string name="source_dice">dés</string>
-    <string name="source_triple">brelan</string>
+    <string name="source_triple">brelan de %1$d, %2$d dés</string>
     <string name="source_tokyo_entry">entrée dans Tokyo</string>
     <string name="source_tokyo_start">début de tour dans Tokyo</string>
     <string name="source_market">renouvellement</string>
@@ -175,15 +199,15 @@
 
     <string name="card_domain_expansion_desc">Tant que vous êtes dans Tokyo, vous infligez +1 dégât. Si vous obtenez au moins 3 Griffes lors de votre lancer final, vous ignorez toutes les immunités et réductions de dégâts des autres monstres.</string>
     <string name="card_infinity_desc">Une fois par tour de table, lorsqu’un monstre vous inflige des dégâts, vous pouvez dépenser 2 Énergie pour annuler entièrement cette attaque.</string>
-    <string name="card_reverse_cursed_desc">Vous récupérez immédiatement 4 Cœurs. Exceptionnellement, cette carte peut être utilisée même si vous êtes dans Tokyo.</string>
+    <string name="card_reverse_cursed_desc">Vous récupérez immédiatement 4 Cœurs. Cette carte peut être utilisée même si vous êtes dans Tokyo.</string>
     <string name="card_binding_vow_desc">Vous ne pouvez plus gagner de Cœurs grâce à vos dés (les effets de cartes fonctionnent toujours). En contrepartie, vous infligez +2 dégâts.</string>
     <string name="card_mahoraga_desc">Votre santé maximale passe à 12 Cœurs. Gagnez immédiatement 2 Cœurs à l’achat de cette carte.</string>
     <string name="card_special_grade_desc">La première fois que vous subissez des dégâts à chaque tour de table, réduisez ces dégâts de 2.</string>
-    <string name="card_black_flash_desc">Jouez cette carte après avoir résolu vos dés. Si vous avez obtenu un brelan de 1, 2 ou 3, infligez immédiatement 2 dégâts à vos adversaires.</string>
+    <string name="card_black_flash_desc">Achetable seulement si vous avez résolu un brelan de 1, 2 ou 3 ce tour-ci : infligez immédiatement 2 dégâts à vos adversaires.</string>
     <string name="card_violet_desc">Infligez 2 dégâts au monstre de votre choix. Si vous êtes dans Tokyo, répartissez 3 dégâts comme vous le souhaitez entre les joueurs à l’extérieur.</string>
     <string name="card_veil_desc">Tant que vous êtes dans Tokyo, chaque attaque qui vous inflige 3 dégâts ou plus est réduite de 1 dégât.</string>
     <string name="card_resonance_desc">Choisissez un monstre. Il perd toute son Énergie. Vous gagnez la moitié de l’Énergie défaussée (arrondie au supérieur).</string>
-    <string name="card_nanami_desc">Si à la fin de votre tour aucune face Griffe n’a été résolue, vous gagnez 1 Énergie et 1 Étoile.</string>
+    <string name="card_nanami_desc">Si vous ne possédez aucune face Griffe lors de votre dernier lancer, vous gagnez 1 Énergie et 1 Étoile à la fin de votre tour.</string>
     <string name="card_ten_shadows_desc">Une fois par tour, vous pouvez transformer un dé affichant un 1 ou un 2 en une face Griffe.</string>
     <string name="card_sukuna_desc">Au début de chacun de vos tours, vous gagnez 1 Étoile mais vous perdez obligatoirement 1 Cœur. Si cela vous tue, vous êtes éliminé.</string>
     <string name="card_overflowing_desc">Récupérez immédiatement 3 Cœurs.</string>
@@ -227,7 +251,7 @@
     <string name="rules_goal_title">But du jeu</string>
     <string name="rules_goal">Soyez le premier sorcier à atteindre 20 ★ ou le dernier survivant. Vous commencez avec 10 ♥. Si vous tombez à 0 ♥, la partie est perdue.</string>
     <string name="rules_turn_title">Déroulement d’un tour</string>
-    <string name="rules_turn">1. Lancez les 6 dés jusqu’à 3 fois. Touchez un dé pour le conserver, touchez-le à nouveau pour le reprendre.\n2. Validez puis résolvez vos dés dans l’ordre de votre choix.\n3. Si la colonie de Tokyo est vide, vous y entrez.\n4. Achetez des techniques au marché avec votre Énergie, puis terminez votre tour.</string>
+    <string name="rules_turn">1. Lancez les 6 dés, jusqu’à 3 lancers. Après chaque lancer, tous les dés sont gardés : touchez ceux à relancer (touchez à nouveau pour les garder), puis « Relancer ».\n2. Validez puis résolvez vos dés dans l’ordre de votre choix.\n3. Si la colonie de Tokyo est vide, vous y entrez.\n4. Achetez des techniques au marché avec votre Énergie : chaque carte s’applique dès l’achat. Puis terminez votre tour.</string>
     <string name="rules_dice_title">Les faces des dés</string>
     <string name="rules_dice">• 1, 2, 3 : un brelan rapporte sa valeur en ★, +1 ★ par dé identique supplémentaire.\n• ⚡ Énergie : sert à acheter des cartes.\n• ♥ Cœur : soigne 1 ♥, sauf dans Tokyo.\n• Griffe : 1 dégât. Depuis Tokyo, vous frappez tous les autres sorciers ; dehors, vous frappez celui qui occupe Tokyo.</string>
     <string name="rules_tokyo_title">La colonie de Tokyo</string>
@@ -235,5 +259,5 @@
     <string name="rules_wickedness_title">Méchanceté</string>
     <string name="rules_wickedness">Un brelan de 1 donne 2 points de Méchanceté, un brelan de 2 en donne 1. Aux seuils 3, 6 et 10, choisissez une tuile de Méchanceté : son effet dure toute la partie. Une seule tuile par seuil.</string>
     <string name="rules_cards_title">Techniques (cartes Énergie)</string>
-    <string name="rules_cards">Trois cartes sont visibles au marché ; 2 ⚡ permettent de les renouveler. Les cartes achetées vont dans votre main : activez les Pouvoirs (effet permanent) et jouez les Actions (effet immédiat) pendant votre tour. Touchez une carte pour lire son effet.</string>
+    <string name="rules_cards">Trois cartes sont visibles au marché ; 2 ⚡ permettent de les renouveler. Une carte s’utilise dès son achat : un Pouvoir est actif tout de suite et pour toute la partie, une Action s’applique immédiatement (en choisissant sa cible si besoin) puis part à la défausse. Une Action dont la condition n’est pas remplie ne peut pas être achetée. Touchez une carte pour lire son effet, ou appuyez longuement pour un aperçu.</string>
 </resources>

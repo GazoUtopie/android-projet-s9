@@ -2,6 +2,7 @@ package fr.epita.thecullinggames.ui.common
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
@@ -12,7 +13,8 @@ import fr.epita.thecullinggames.business.model.DieFace
 
 /**
  * Custom die: a rounded square showing the face symbol.
- * A kept die gets a purple glow, the Cybercerveau die a "×2" badge, an unrolled die a "?".
+ * Dice are kept by default: a die selected for the next roll is dimmed, with a dashed red border
+ * and a "↻" badge. The Cybercerveau die gets a "×2" badge, an unrolled die shows "?".
  */
 class DieView @JvmOverloads constructor(
     context: Context,
@@ -21,7 +23,7 @@ class DieView @JvmOverloads constructor(
 
     var face: DieFace? = null
         set(value) { field = value; updateDescription(); invalidate() }
-    var kept = false
+    var toReroll = false
         set(value) { field = value; updateDescription(); invalidate() }
     var doubled = false
         set(value) { field = value; invalidate() }
@@ -34,6 +36,7 @@ class DieView @JvmOverloads constructor(
         textAlign = Paint.Align.CENTER
         isFakeBoldText = true
     }
+    private val dash = DashPathEffect(floatArrayOf(6 * density, 4 * density), 0f)
     private val badgePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = ContextCompat.getColor(context, R.color.wickedness_red) }
     private val badgeTextPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = Paint.Align.CENTER
@@ -57,13 +60,14 @@ class DieView @JvmOverloads constructor(
 
         facePaint.color = when {
             face == null -> color(R.color.cursed_surface_high)
-            kept -> color(R.color.cursed_purple)
             else -> color(R.color.die_face)
         }
+        facePaint.alpha = if (toReroll) 90 else 255
         canvas.drawRoundRect(rect, radius, radius, facePaint)
 
-        borderPaint.strokeWidth = (if (kept) 3 else 1) * density
-        borderPaint.color = if (kept) color(R.color.points_gold) else color(R.color.cursed_outline)
+        borderPaint.strokeWidth = (if (toReroll) 3 else 1) * density
+        borderPaint.color = if (toReroll) color(R.color.wickedness_red) else color(R.color.cursed_outline)
+        borderPaint.pathEffect = if (toReroll) dash else null
         canvas.drawRoundRect(rect, radius, radius, borderPaint)
 
         val current = face
@@ -75,6 +79,7 @@ class DieView @JvmOverloads constructor(
             DieFace.CLAW -> color(R.color.black)
             else -> color(R.color.die_text)
         }
+        if (toReroll) textPaint.color = color(R.color.text_secondary)
         val text = current?.let { Visuals.symbol(it) } ?: "?"
         val y = rect.centerY() - (textPaint.descent() + textPaint.ascent()) / 2
         canvas.drawText(text, rect.centerX(), y, textPaint)
@@ -87,10 +92,19 @@ class DieView @JvmOverloads constructor(
             badgeTextPaint.textSize = r * 1.0f
             canvas.drawText("×2", cx, cy - (badgeTextPaint.descent() + badgeTextPaint.ascent()) / 2, badgeTextPaint)
         }
+
+        if (toReroll) {
+            val r = width * 0.17f
+            val cx = rect.left + r * 0.6f
+            val cy = rect.top + r * 0.6f
+            canvas.drawCircle(cx, cy, r, badgePaint)
+            badgeTextPaint.textSize = r * 1.3f
+            canvas.drawText("↻", cx, cy - (badgeTextPaint.descent() + badgeTextPaint.ascent()) / 2, badgeTextPaint)
+        }
     }
 
     private fun updateDescription() {
         val name = face?.let { context.getString(Visuals.faceName(it)) } ?: "?"
-        contentDescription = if (kept) "$name, ${context.getString(R.string.die_kept)}" else name
+        contentDescription = if (toReroll) "$name, ${context.getString(R.string.die_to_reroll)}" else name
     }
 }

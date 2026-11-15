@@ -27,8 +27,11 @@ class GameState(
     var cyberDieIndex: Int? = null
     val resolvedGroups = mutableSetOf<ResolveGroup>()
 
-    /** At least one Claw face was resolved this turn (Nanami's overtime). */
-    var clawsResolved = false
+    /**
+     * The dice showed at least one Claw when the player validated them (Nanami's overtime).
+     * Read on the faces at validation: a later 10 Shadows does not change it, Cybercerveau adds no face.
+     */
+    var finalRollHadClaw = false
 
     /** Values (1, 2, 3) of the triples resolved this turn (Black Flash). */
     val triplesResolved = mutableSetOf<Int>()

@@ -19,8 +19,10 @@ private class SameItem<T>(private val key: (T) -> Any) : DiffUtil.ItemCallback<T
     override fun areContentsTheSame(oldItem: T & Any, newItem: T & Any) = oldItem == newItem
 }
 
-/** Player strip: portrait, HP bar, resources, Tokyo badge; the active player is outlined. */
-class PlayerAdapter : ListAdapter<PlayerUi, PlayerAdapter.Holder>(SameItem { it.id }) {
+/** Player strip: portrait, HP bar, resources, Tokyo badge; the active player is outlined. A tap opens the profile. */
+class PlayerAdapter(
+    private val onClick: (PlayerUi) -> Unit,
+) : ListAdapter<PlayerUi, PlayerAdapter.Holder>(SameItem { it.id }) {
 
     class Holder(val binding: ItemPlayerBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -50,15 +52,18 @@ class PlayerAdapter : ListAdapter<PlayerUi, PlayerAdapter.Holder>(SameItem { it.
             }
             card.strokeColor = ContextCompat.getColor(context, stroke)
             card.strokeWidth = (context.resources.displayMetrics.density * if (player.isActive) 3 else 1).toInt()
+            card.contentDescription = context.getString(R.string.player_open_profile, player.name)
+            card.setOnClickListener { onClick(player) }
         }
     }
 }
 
 data class CardItemUi(val card: CardId, val price: Int?, val enabled: Boolean)
 
-/** Card thumbnails, used for the market and for the hand. */
+/** Card thumbnails, used for the market and for the hand. A long press previews the effect. */
 class CardAdapter(
     private val onClick: (CardItemUi) -> Unit,
+    private val onLongClick: (CardItemUi, android.view.View) -> Unit,
 ) : ListAdapter<CardItemUi, CardAdapter.Holder>(SameItem { it.card }) {
 
     class Holder(val binding: ItemCardBinding) : RecyclerView.ViewHolder(binding.root)
@@ -81,6 +86,7 @@ class CardAdapter(
             image.alpha = if (item.enabled) 1f else 0.55f
             card.strokeColor = ContextCompat.getColor(context, if (item.enabled) R.color.cursed_purple else R.color.cursed_outline)
             card.setOnClickListener { onClick(item) }
+            card.setOnLongClickListener { onLongClick(item, it); true }
         }
     }
 }

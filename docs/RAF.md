@@ -101,6 +101,21 @@ Pour le plan back, Nadir prend en charge l’ensemble des couches Business et Da
 - [ ] Documenter le lancement, l’architecture, les limites connues et la répartition des contributions. *Lancement, architecture, correspondance spécifications → code et limites dans le README ; répartition réelle des contributions à compléter par l’équipe.*
 - [ ] Préparer une version de démonstration et vérifier les critères de la grille IPAN2 fournie dans `docs/`.
 
+## 9. Itération retours visuels et règles — octobre 2026
+
+- [x] Gain de points « 4 ★ avec quatre 2 » : moteur correct (2 + 1) ; le 4e point venait d’un autre gain du même moment (entrée dans Tokyo) ou de Cybercerveau. Le journal précise désormais « brelan de 2, 4 dés ». Tests ajoutés.
+- [x] Victoire immédiate à 20 ★ à n’importe quel moment, et dernier survivant gagnant immédiatement.
+- [x] Cartes utilisées dès l’achat : main supprimée, Pouvoirs actifs à l’achat, Actions résolues à l’achat avec choix de cible, Actions non achetables si leur condition n’est pas remplie (raison affichée).
+- [x] Mahoraga’s adaptation (maximum à 12 puis soin de 2 à l’achat) et texte de Reversed Cursed Technique.
+- [x] Nanami's overtime : condition « aucune face Griffe lors de votre dernier lancer », lue sur les dés validés (convention 10 Shadows / Cybercerveau dans `A_CLARIFIER.md`).
+- [x] Dés : tous gardés après un lancer, on touche ceux à relancer ; bouton « Relancer (n) » désactivé sans sélection.
+- [x] Entrées et sorties de Tokyo : bannière non bloquante, mise en évidence de la zone Tokyo et du panneau du joueur.
+- [x] Achats : une seule notification par achat avec la carte, l’acheteur et l’effet appliqué ; file d’attente sans chevauchement, conservée à la rotation sans être rejouée.
+- [x] Cartes et tuiles : carte ou tuile affichée en grand puis envoyée vers les joueurs touchés ; appui long sur une carte du marché, un Pouvoir ou une tuile pour voir son effet.
+- [x] Profil d’un joueur (appui sur son panneau) : jauge de Méchanceté, tuiles, Pouvoirs actifs, effets en cours.
+- [ ] Vérifier ces retours visuels sur appareil (durées, lisibilité pendant les tours des IA).
+- [ ] Mettre à jour `docs/Rules-Cards` (texte source) pour Nanami's overtime, Reversed Cursed Technique et l’utilisation des cartes à l’achat.
+
 ## Ordre de réalisation proposé
 
 1. Architecture et contrats, puis moteur de base avec repository en mémoire.

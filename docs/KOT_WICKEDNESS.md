@@ -64,9 +64,9 @@ Référence : livret fourni, pages 4 à 8. Il s'agit de la base documentaire, av
 | Tokyo | Entrée obligatoire si vide pendant la phase correspondante. Partie commencée à trois ou quatre : +1 point de victoire à l’entrée, +2 au début du tour dans Tokyo. Partie commencée à deux : +1 Énergie à chacun de ces moments, à la place des points. |
 | Fuite | Un occupant blessé par les Griffes peut choisir de sortir après avoir subi les dégâts. Les pertes de PV causées par une carte ne permettent pas cette fuite selon le livret. |
 | Achats | Une ou plusieurs cartes achetables si l'Énergie suffit ; chaque achat révèle immédiatement une carte de remplacement. Dépenser 2 Énergies permet de renouveler les trois cartes visibles. |
-| Types | Pouvoir : conservé et actif selon son texte. Action : résolue immédiatement puis défaussée dans la règle de base. |
+| Types | Variante : toute carte s’utilise dès l’achat. Pouvoir : actif dès l’achat et pour toute la partie. Action : résolue immédiatement à l’achat puis défaussée ; non achetable si sa condition n’est pas remplie. |
 | Élimination | À zéro PV, le monstre est éliminé et ses cartes Pouvoir, tuiles et Énergies sont défaussées. |
-| Victoire | Vérification à la fin du tour selon ce livret : un monstre vivant ayant atteint 20 points de victoire, ou le dernier survivant, gagne. Un monstre mort ne gagne pas ; si tous sont éliminés simultanément, tous perdent. |
+| Victoire | Variante : immédiate. Dès qu’un monstre vivant atteint 20 points de victoire, à n’importe quel moment, ou qu’il est le dernier survivant, il gagne et la partie s’arrête. Un monstre mort ne gagne pas ; l’élimination du joueur humain est une défaite immédiate. |
 
 Tokyo Bay est exclu puisque le format ne dépasse pas quatre participants. Pour une partie commençant à deux participants, le livret page 7 conseille une option : gagner 1 Énergie à l’entrée dans Tokyo au lieu de 1 point de victoire, et 1 Énergie au début du tour dans Tokyo au lieu de 2 points de victoire. Cette option est retenue pour notre version. Une partie commencée à trois ou quatre conserve les bonus ordinaires de points de victoire, même si elle se réduit à deux survivants.
 
@@ -80,13 +80,13 @@ Les noms ci-dessous conservent l'orthographe de `Rules-Cards`. Ce tableau résum
 | 5 | Infinity | Pouvoir | Dépenser 2 Énergies pour annuler une attaque reçue ; une utilisation par tour de table. |
 | 5 | Reversed Cursed Technique | Action | Soin immédiat de 4 PV, y compris dans Tokyo. |
 | 5 | Binding Vow | Pouvoir | Interdit le soin par les dés ; +2 dégâts ; soins de cartes autorisés. |
-| 5 | Moharaga's adaptation | Pouvoir | Maximum fixé à 12 PV ; soin immédiat de 2 PV à l'achat. |
+| 5 | Moharaga's adaptation | Pouvoir | À l’achat : maximum porté à 12 PV, puis soin de 2 PV. |
 | 4 | Special Grade | Pouvoir | Première fois que des dégâts sont subis par tour de table : réduction de 2. |
-| 4 | Black Flash | Action | Après les dés, un brelan de 1, 2 ou 3 permet d'infliger 2 dégâts supplémentaires aux adversaires. |
+| 4 | Black Flash | Action | Achetable seulement après un brelan de 1, 2 ou 3 résolu ce tour-ci : 2 dégâts à chaque adversaire. |
 | 4 | Violet | Action | 2 dégâts à une cible ; depuis Tokyo, 3 dégâts à répartir entre les joueurs extérieurs. |
 | 4 | Veil | Pouvoir | Dans Tokyo, les attaques infligeant au moins 3 dégâts sont réduites de 1. |
 | 4 | Resonance technique | Action | Une cible perd toute son Énergie ; gain de la moitié de cette quantité, arrondie au supérieur. |
-| 3 | Nanami's overtime | Pouvoir | Fin de tour sans dégât, précisé comme aucune Griffe résolue : +1 Énergie et +1 point de victoire. |
+| 3 | Nanami's overtime | Pouvoir | Aucune face Griffe sur les dés validés du dernier lancer : +1 Énergie et +1 point de victoire en fin de tour. |
 | 3 | 10 Shadows | Pouvoir | Une fois par tour, transformer une face 1 ou 2 en Griffe. |
 | 3 | Sukuna's finger | Pouvoir | Début de chaque tour : +1 point de victoire et perte obligatoire de 1 PV, potentiellement mortelle. |
 | 3 | Overflowing Energy | Action | Soin immédiat de 3 PV. |
@@ -121,8 +121,8 @@ Des valeurs provisoires sont utilisées pour avancer, avec détail et équilibra
 - Deux, trois ou quatre participants : un humain et les autres contrôlés par une IA simple ; un seul emplacement Tokyo.
 - Aucune sauvegarde persistante ; les capacités propres aux personnages seront étudiées plus tard.
 - Un exemplaire de chaque carte Énergie ; marché de trois cartes ; défausse remélangée lorsque la pioche est épuisée.
-- Les cartes peuvent être conservées et jouées plus tard, uniquement pendant le tour de leur propriétaire. Une fois Infinity activé pendant son tour, sa réaction peut être utilisée pendant le tour adverse, en payant 2 Énergies, une fois par tour de table.
-- Les cartes Pouvoir sont permanentes après activation. Leurs conditions sont réévaluées : Domain Expension et Veil s’appliquent dans Tokyo, cessent de produire cet effet dehors et le retrouvent au retour dans Tokyo. Veil est un Pouvoir.
+- Les cartes s’utilisent dès leur achat (plus de main) : un Pouvoir est actif tout de suite, une Action s’applique immédiatement puis est défaussée. Infinity acheté peut servir dès le tour adverse suivant, en payant 2 Énergies, une fois par tour de table.
+- Les cartes Pouvoir sont permanentes dès l’achat. Leurs conditions sont réévaluées : Domain Expension et Veil s’appliquent dans Tokyo, cessent de produire cet effet dehors et le retrouvent au retour dans Tokyo. Veil est un Pouvoir.
 - Au début du tour, les soins sont prioritaires sur les pertes de PV, notamment Éternel avant Sukuna’s finger.
 - Divergent Fist concerne uniquement le prochain tour après utilisation et retire au maximum une Énergie par cible pendant ce tour.
 - Boogie Woogie est inutilisable si Tokyo est vide ; le sortant gagne toujours un point.

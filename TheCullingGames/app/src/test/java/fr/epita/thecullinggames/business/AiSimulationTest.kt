@@ -29,8 +29,19 @@ class AiSimulationTest {
                 val command = ai.decide(engine, decider)
                 val result = engine.submit(command)
                 assertTrue("seed $seed: ${result.error}", result.accepted)
+                // Immediate victory: a living player at 20 points always means the game is over.
+                if (engine.state.alivePlayers.any { it.vp >= engine.rules.victoryPoints }) {
+                    assertTrue("seed $seed: 20 points without victory", engine.isOver)
+                }
                 steps++
                 assertTrue("seed $seed: game does not end", steps < 20_000)
+            }
+            engine.state.winnerId?.let { id ->
+                val winner = engine.state.player(id)
+                assertTrue(
+                    "seed $seed: winner without 20 points nor last survivor",
+                    winner.alive && (winner.vp >= engine.rules.victoryPoints || engine.state.alivePlayers.size == 1),
+                )
             }
         }
     }

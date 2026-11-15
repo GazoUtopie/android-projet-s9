@@ -12,6 +12,8 @@ import fr.epita.thecullinggames.business.model.GameState
 import fr.epita.thecullinggames.business.model.PendingChoice
 import fr.epita.thecullinggames.business.model.Phase
 import fr.epita.thecullinggames.business.model.PlayerState
+import fr.epita.thecullinggames.business.model.PurchaseBlock
+import fr.epita.thecullinggames.business.model.TargetOption
 import fr.epita.thecullinggames.business.model.ResolveGroup
 import fr.epita.thecullinggames.business.model.Source
 import fr.epita.thecullinggames.business.model.TileId
@@ -111,6 +113,7 @@ class GameEngine(
                 GameCommand.AnswerFlee(playerId, false),
             )
             is PendingChoice.ChooseTile -> return pending.options.map { GameCommand.ChooseTile(playerId, it) }
+            is PendingChoice.CardTargets -> return pending.options.map { GameCommand.ChooseCardTarget(playerId, it) }
             null -> Unit
         }
 
@@ -133,23 +136,19 @@ class GameEngine(
                     }
                     commands += diceModifiers(player)
                 }
-                commands += cardUses(player)
             }
             Phase.RESOLVING -> {
                 if (state.resolvedGroups.isEmpty()) commands += diceModifiers(player)
                 remainingGroups().forEach { commands += GameCommand.Resolve(playerId, it) }
             }
             Phase.BUY -> {
-                state.market.filter { priceOf(player, it) <= player.energy }
+                state.market.filter { purchaseBlock(player, it) == null }
                     .forEach { commands += GameCommand.BuyCard(playerId, it) }
                 if (player.has(CardId.MAKI_GLASSES)) {
                     val top = peekDeck()
-                    if (top != null && priceOf(player, top) <= player.energy) {
-                        commands += GameCommand.BuyTopOfDeck(playerId)
-                    }
+                    if (top != null && purchaseBlock(player, top) == null) commands += GameCommand.BuyTopOfDeck(playerId)
                 }
                 if (player.energy >= rules.refreshCost) commands += GameCommand.RefreshMarket(playerId)
-                commands += cardUses(player)
                 commands += GameCommand.EndTurn(playerId)
             }
             Phase.CHOOSE_TILE, Phase.GAME_OVER -> Unit
@@ -173,53 +172,49 @@ class GameEngine(
         return commands
     }
 
-    /** Powers to activate and Actions to play from the hand, during the owner's own turn. */
-    private fun cardUses(player: PlayerState): List<GameCommand> {
-        val commands = mutableListOf<GameCommand>()
-        val opponents = state.alivePlayers.filter { it.id != player.id }
-        val inTokyo = state.tokyoId == player.id
-        for (card in player.hand.distinct()) {
-            if (cardDef(card).type == CardType.POWER) {
-                commands += GameCommand.ActivatePower(player.id, card)
-                continue
-            }
-            when (card) {
-                CardId.REVERSE_CURSED_TECHNIQUE, CardId.OVERFLOWING_ENERGY, CardId.DIVERGENT_FIST,
-                CardId.TALISMAN -> commands += GameCommand.PlayAction(player.id, card)
+    /**
+     * Why [card] cannot be bought by [playerId] now, or null if it can. Cards are used at purchase:
+     * an Action whose condition is not met cannot be bought.
+     */
+    fun purchaseBlock(playerId: Int, card: CardId): PurchaseBlock? = purchaseBlock(state.player(playerId), card)
 
-                CardId.BLACK_FLASH -> if (state.phase == Phase.BUY && state.triplesResolved.isNotEmpty()) {
-                    commands += GameCommand.PlayAction(player.id, card)
-                }
+    private fun purchaseBlock(player: PlayerState, card: CardId): PurchaseBlock? = when {
+        state.phase != Phase.BUY || state.pending != null || player.id != state.activeId -> PurchaseBlock.NOT_BUY_PHASE
+        priceOf(player, card) > player.energy -> PurchaseBlock.NOT_ENOUGH_ENERGY
+        cardDef(card).type == CardType.ACTION -> actionBlock(player, card)
+        else -> null
+    }
 
-                CardId.VIOLET -> if (inTokyo) {
-                    allocations(opponents.map { it.id }, rules.violetTokyoTotal).forEach {
-                        commands += GameCommand.PlayAction(player.id, card, allocation = it)
-                    }
-                } else {
-                    opponents.forEach { commands += GameCommand.PlayAction(player.id, card, target = it.id) }
-                }
-
-                CardId.RESONANCE -> opponents.forEach {
-                    commands += GameCommand.PlayAction(player.id, card, target = it.id)
-                }
-
-                // Swap with the occupant of Tokyo "et inversement": from Tokyo, swap with a player outside.
-                CardId.BOOGIE_WOOGIE -> when (state.tokyoId) {
-                    null -> Unit
-                    player.id -> opponents.forEach { commands += GameCommand.PlayAction(player.id, card, target = it.id) }
-                    else -> commands += GameCommand.PlayAction(player.id, card, target = state.tokyoId)
-                }
-
-                CardId.BLOOD_MANIPULATION -> if (player.hp > rules.bloodManipulationCost) {
-                    opponents.filter { it.id != state.tokyoId }.forEach {
-                        commands += GameCommand.PlayAction(player.id, card, target = it.id)
-                    }
-                }
-
-                else -> Unit
-            }
+    private fun actionBlock(player: PlayerState, card: CardId): PurchaseBlock? = when (card) {
+        CardId.BLACK_FLASH -> if (state.triplesResolved.isEmpty()) PurchaseBlock.NO_TRIPLE else null
+        CardId.BOOGIE_WOOGIE -> if (state.tokyoId == null) PurchaseBlock.TOKYO_EMPTY else null
+        CardId.BLOOD_MANIPULATION -> when {
+            player.hp <= rules.bloodManipulationCost -> PurchaseBlock.ONE_HP
+            targetOptions(player, card).isEmpty() -> PurchaseBlock.NO_TARGET
+            else -> null
         }
-        return commands
+        else -> null
+    }
+
+    /** Choices offered when [card] (an Action) resolves; empty when it needs no choice. */
+    private fun targetOptions(player: PlayerState, card: CardId): List<TargetOption> {
+        val opponents = state.alivePlayers.filter { it.id != player.id }
+        return when (card) {
+            CardId.VIOLET -> if (state.tokyoId == player.id) {
+                allocations(opponents.map { it.id }, rules.violetTokyoTotal).map { TargetOption(allocation = it) }
+            } else {
+                opponents.map { TargetOption(target = it.id) }
+            }
+            CardId.RESONANCE -> opponents.map { TargetOption(target = it.id) }
+            // Swap with the occupant of Tokyo "et inversement": from Tokyo, swap with a player outside.
+            CardId.BOOGIE_WOOGIE -> when (state.tokyoId) {
+                null -> emptyList()
+                player.id -> opponents.map { TargetOption(target = it.id) }
+                else -> listOf(TargetOption(target = state.tokyoId))
+            }
+            CardId.BLOOD_MANIPULATION -> opponents.filter { it.id != state.tokyoId }.map { TargetOption(target = it.id) }
+            else -> emptyList()
+        }
     }
 
     /** All the ways to split [total] damage between [targets] (zero allowed for a target). */
@@ -261,7 +256,10 @@ class GameEngine(
             is GameCommand.ToggleKeep -> state.dice = state.dice.mapIndexed { i, die ->
                 if (i == command.dieIndex) die.copy(kept = !die.kept) else die
             }
-            is GameCommand.StopRolling -> state.phase = Phase.RESOLVING
+            is GameCommand.StopRolling -> {
+                state.finalRollHadClaw = state.dice.any { it.face == DieFace.CLAW }
+                state.phase = Phase.RESOLVING
+            }
             is GameCommand.UseIncantation -> {
                 player.energy -= 1
                 player.incantationUsed = true
@@ -291,8 +289,11 @@ class GameEngine(
                 renewMarket()
                 emit(GameEvent.MarketRefreshed(player.id))
             }
-            is GameCommand.ActivatePower -> activatePower(player, command.card)
-            is GameCommand.PlayAction -> playAction(player, command)
+            is GameCommand.ChooseCardTarget -> {
+                val pending = state.pending as PendingChoice.CardTargets
+                state.pending = null
+                resolveAction(player, pending.card, command.option)
+            }
             is GameCommand.AnswerInfinity -> {
                 state.pending = null
                 damageQueue.first().infinityAnswer = command.use
@@ -334,7 +335,7 @@ class GameEngine(
         state.maxRolls = rules.baseRolls + if (player.has(TileId.SOURNOIS)) 1 else 0
         state.cyberDieIndex = null
         state.resolvedGroups.clear()
-        state.clawsResolved = false
+        state.finalRollHadClaw = false
         state.triplesResolved.clear()
         state.divergentDrained.clear()
 
@@ -365,7 +366,8 @@ class GameEngine(
     private fun roll(player: PlayerState) {
         val first = !state.hasRolled
         state.dice = state.dice.map { die ->
-            if (first || !die.kept) Die(randomFace(), kept = false) else die
+            // Every die is kept after a roll; the player then releases the ones to reroll.
+            if (first || !die.kept) Die(randomFace(), kept = true) else die
         }
         state.rollsUsed++
         emit(GameEvent.Rolled(player.id, state.rollsUsed, state.dice.map { it.face }))
@@ -423,7 +425,8 @@ class GameEngine(
             if (count < 3) continue
             val value = face.number!!
             state.triplesResolved += value
-            changeVp(player, value + (count - 3), Source.Triple)
+            changeVp(player, value + (count - 3), Source.Triple(value, count))
+            if (isOver) return // the 20th point ends the game at once
             if (value == 1 && player.has(TileId.FURTIF)) changeVp(player, 1, Source.Tile(TileId.FURTIF))
             val wickedness = when (value) {
                 1 -> rules.wickednessForTripleOnes
@@ -438,7 +441,6 @@ class GameEngine(
     }
 
     private fun resolveClaws(attacker: PlayerState, claws: Int) {
-        if (claws > 0) state.clawsResolved = true
         val inTokyo = state.tokyoId == attacker.id
         val targets = if (inTokyo) {
             state.alivePlayers.filter { it.id != attacker.id }
@@ -549,6 +551,7 @@ class GameEngine(
             return
         }
         if (state.tokyoId == null && player.alive) enterTokyo(player, withBonus = true)
+        if (isOver) return // the Tokyo entry point may win the game
         state.phase = Phase.BUY
     }
 
@@ -574,6 +577,7 @@ class GameEngine(
     }
 
     private fun enterTokyo(player: PlayerState, withBonus: Boolean) {
+        if (isOver) return
         state.tokyoId = player.id
         emit(GameEvent.EnteredTokyo(player.id))
         if (!withBonus) return
@@ -583,11 +587,11 @@ class GameEngine(
 
     private fun endTurn() {
         val player = state.active
-        if (player.alive && player.has(CardId.NANAMI_OVERTIME) && !state.clawsResolved) {
+        if (player.alive && player.has(CardId.NANAMI_OVERTIME) && !state.finalRollHadClaw) {
             changeEnergy(player, 1, Source.Card(CardId.NANAMI_OVERTIME))
             changeVp(player, 1, Source.Card(CardId.NANAMI_OVERTIME))
         }
-        if (checkVictory()) return
+        if (isOver) return // victory is immediate (Nanami may give the 20th point)
         var next = player.id
         do {
             next = (next + 1) % state.players.size
@@ -596,21 +600,8 @@ class GameEngine(
         beginTurn()
     }
 
-    /** Victory at the end of a turn: 20 points while alive, or last survivor. */
-    private fun checkVictory(): Boolean {
-        val alive = state.alivePlayers
-        val winner = when {
-            alive.isEmpty() -> null
-            alive.size == 1 -> alive.first()
-            else -> alive.filter { it.vp >= rules.victoryPoints }
-                .sortedWith(compareByDescending<PlayerState> { it.id == state.activeId }.thenByDescending { it.vp })
-                .firstOrNull() ?: return false
-        }
-        gameOver(winner?.id)
-        return true
-    }
-
     private fun gameOver(winnerId: Int?) {
+        if (isOver) return
         state.phase = Phase.GAME_OVER
         state.pending = null
         state.winnerId = winnerId
@@ -622,15 +613,17 @@ class GameEngine(
         player.alive = false
         player.hp = 0
         player.energy = 0
-        state.discard += player.hand
         state.discard += player.powers
-        player.hand.clear()
         player.powers.clear()
         player.tiles.clear()
         if (state.tokyoId == player.id) state.tokyoId = null
         emit(GameEvent.Eliminated(player.id))
-        // Game Over as soon as the human is eliminated.
-        if (player.isHuman) gameOver(null)
+        // Game Over as soon as the human is eliminated; the last survivor wins immediately.
+        val survivors = state.alivePlayers
+        when {
+            player.isHuman -> gameOver(null)
+            survivors.size == 1 -> gameOver(survivors.first().id)
+        }
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -664,26 +657,31 @@ class GameEngine(
         refillMarket()
     }
 
+    /** Cards are used as soon as they are bought: a Power becomes active, an Action resolves. */
     private fun buy(player: PlayerState, card: CardId, fromMarket: Boolean) {
         val price = priceOf(player, card)
         player.energy -= price
         if (fromMarket) state.market -= card else state.deck.removeFirst()
-        player.hand += card
         emit(GameEvent.CardBought(player.id, card, price))
-        if (card == CardId.MAHORAGA_ADAPTATION) heal(player, rules.mahoragaHeal, Source.Card(card))
         refillMarket()
+        if (cardDef(card).type == CardType.POWER) {
+            player.powers += card
+            if (card == CardId.MAHORAGA_ADAPTATION) {
+                // The maximum is raised first, then the heal applies (9/10 becomes 11/12).
+                player.maxHp = rules.boostedMaxHp
+                heal(player, rules.mahoragaHeal, Source.Card(card))
+            }
+            return
+        }
+        val options = targetOptions(player, card)
+        if (options.size > 1) {
+            state.pending = PendingChoice.CardTargets(player.id, card, options)
+        } else {
+            resolveAction(player, card, options.firstOrNull() ?: TargetOption())
+        }
     }
 
-    private fun activatePower(player: PlayerState, card: CardId) {
-        player.hand -= card
-        player.powers += card
-        emit(GameEvent.PowerActivated(player.id, card))
-        if (card == CardId.MAHORAGA_ADAPTATION) player.maxHp = rules.boostedMaxHp
-    }
-
-    private fun playAction(player: PlayerState, command: GameCommand.PlayAction) {
-        val card = command.card
-        player.hand -= card
+    private fun resolveAction(player: PlayerState, card: CardId, option: TargetOption) {
         emit(GameEvent.ActionPlayed(player.id, card))
         val source = Source.Card(card)
         when (card) {
@@ -695,14 +693,14 @@ class GameEngine(
                 changeEnergy(player, 1, source)
             }
             CardId.RESONANCE -> {
-                val target = state.player(command.target!!)
+                val target = state.player(option.target!!)
                 val drained = target.energy
                 changeEnergy(target, -drained, source)
                 changeEnergy(player, (drained + 1) / 2, source)
             }
             CardId.BOOGIE_WOOGIE -> {
                 // The one who leaves Tokyo always gains the point; the one who enters gets no entry bonus.
-                val other = state.player(command.target!!)
+                val other = state.player(option.target!!)
                 val (leaving, entering) = if (state.tokyoId == player.id) player to other else other to player
                 emit(GameEvent.LeftTokyo(leaving.id))
                 changeVp(leaving, rules.boogieWoogieVp, source)
@@ -711,14 +709,14 @@ class GameEngine(
             CardId.BLACK_FLASH -> state.alivePlayers.filter { it.id != player.id }.forEach {
                 queueCardDamage(player, it.id, rules.blackFlashDamage, card)
             }
-            CardId.VIOLET -> if (command.target != null) {
-                queueCardDamage(player, command.target, rules.violetDamage, card)
+            CardId.VIOLET -> if (option.target != null) {
+                queueCardDamage(player, option.target, rules.violetDamage, card)
             } else {
-                command.allocation.forEach { (target, damage) -> queueCardDamage(player, target, damage, card) }
+                option.allocation.forEach { (target, damage) -> queueCardDamage(player, target, damage, card) }
             }
             CardId.BLOOD_MANIPULATION -> {
                 loseHp(player, rules.bloodManipulationCost, source)
-                queueCardDamage(player, command.target!!, rules.bloodManipulationDamage, card)
+                queueCardDamage(player, option.target!!, rules.bloodManipulationDamage, card)
             }
             else -> error("$card is not an Action")
         }
@@ -738,6 +736,7 @@ class GameEngine(
     // ---------------------------------------------------------------------------------------------
 
     private fun heal(player: PlayerState, amount: Int, source: Source) {
+        if (isOver) return
         val healed = minOf(amount, player.maxHp - player.hp).coerceAtLeast(0)
         if (healed == 0) return
         player.hp += healed
@@ -746,24 +745,28 @@ class GameEngine(
 
     /** Direct loss of HP (damage already computed, or a cost). Eliminates at 0. */
     private fun loseHp(player: PlayerState, amount: Int, source: Source?) {
-        if (amount <= 0 || !player.alive) return
+        if (amount <= 0 || !player.alive || isOver) return
         player.hp = (player.hp - amount).coerceAtLeast(0)
         if (source != null) emit(GameEvent.HpChanged(player.id, -amount, source))
         if (player.hp == 0) eliminate(player)
     }
 
     private fun changeEnergy(player: PlayerState, delta: Int, source: Source) {
+        if (isOver) return
         val real = if (delta < 0) -minOf(-delta, player.energy) else delta
         if (real == 0) return
         player.energy += real
         emit(GameEvent.EnergyChanged(player.id, real, source))
     }
 
+    /** Points change; a living player reaching the target wins immediately, whatever the moment. */
     private fun changeVp(player: PlayerState, delta: Int, source: Source) {
+        if (isOver) return
         val real = if (delta < 0) -minOf(-delta, player.vp) else delta
         if (real == 0) return
         player.vp += real
         emit(GameEvent.VpChanged(player.id, real, source))
+        if (player.alive && player.vp >= rules.victoryPoints) gameOver(player.id)
     }
 
     private fun emit(event: GameEvent) {

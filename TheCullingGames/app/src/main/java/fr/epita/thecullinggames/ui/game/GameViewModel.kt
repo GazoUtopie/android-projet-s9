@@ -7,6 +7,8 @@ import fr.epita.thecullinggames.business.ai.SimpleAi
 import fr.epita.thecullinggames.business.engine.GameEngine
 import fr.epita.thecullinggames.business.model.CardId
 import fr.epita.thecullinggames.business.model.GameCommand
+import fr.epita.thecullinggames.business.model.GameEvent
+import fr.epita.thecullinggames.business.model.TileId
 import fr.epita.thecullinggames.business.model.Phase
 import fr.epita.thecullinggames.business.repository.GameRepository
 import fr.epita.thecullinggames.data.ServiceLocator
@@ -41,16 +43,59 @@ class GameViewModel(
     private val _result = MutableStateFlow<GameResult?>(null)
     val result: StateFlow<GameResult?> = _result.asStateFlow()
 
+    /**
+     * Feedback being shown now. Items wait in a queue so they never overlap, and the game never
+     * waits for them. The queue lives here: it survives a rotation and nothing is replayed.
+     */
+    private val _feedback = MutableStateFlow<Feedback?>(null)
+    val feedback: StateFlow<Feedback?> = _feedback.asStateFlow()
+    private val feedbackQueue = ArrayDeque<Feedback>()
+    private var feedbackJob: Job? = null
+    private var nextFeedbackId = 0L
+
+    /** Id of the last item whose animation the View already started (not restarted after a rotation). */
+    var displayedFeedbackId: Long = -1L
+        private set
+
     init {
         playAis()
     }
 
     fun send(command: GameCommand) {
         if (aiJob?.isActive == true) return
-        if (engine.submit(command).accepted) {
+        val result = engine.submit(command)
+        if (result.accepted) {
+            enqueueFeedback(result.events)
             publish()
             playAis()
         }
+    }
+
+    fun markFeedbackDisplayed(id: Long) {
+        displayedFeedbackId = id
+    }
+
+    private fun enqueueFeedback(events: List<GameEvent>) {
+        feedbackQueue += FeedbackBuilder.build(events) { nextFeedbackId++ }
+        if (feedbackJob?.isActive == true || feedbackQueue.isEmpty()) return
+        feedbackJob = viewModelScope.launch {
+            while (feedbackQueue.isNotEmpty()) {
+                val item = feedbackQueue.removeFirst()
+                _feedback.value = item
+                delay(durationOf(item, backlog = feedbackQueue.size))
+            }
+            _feedback.value = null
+        }
+    }
+
+    /** Shorter display when items pile up during the AI turns, so the feedback keeps up with the game. */
+    private fun durationOf(item: Feedback, backlog: Int): Long {
+        val base = when (item) {
+            is Feedback.Showcase -> SHOWCASE_MS
+            is Feedback.Impacts -> IMPACTS_MS
+            else -> BANNER_MS
+        }
+        return if (backlog >= 2) base * 3 / 5 else base
     }
 
     /** Plays every AI decision (their turns and their reactions) until the human must decide. */
@@ -62,7 +107,7 @@ class GameViewModel(
                 if (engine.state.player(decider).isHuman) break
                 val command = ai.decide(engine, decider)
                 delay(paceOf(command))
-                engine.submit(command)
+                enqueueFeedback(engine.submit(command).events)
                 publish()
             }
             publish()
@@ -102,6 +147,15 @@ class GameViewModel(
                     id = it.id, characterId = it.character.id, name = it.name, isHuman = it.isHuman,
                     hp = it.hp, maxHp = it.maxHp, energy = it.energy, vp = it.vp, wickedness = it.wickedness,
                     alive = it.alive, inTokyo = s.tokyoId == it.id, isActive = s.activeId == it.id,
+                    tiles = it.tiles.toList(), powers = it.powers.toList(),
+                    effects = if (!it.alive) emptyList() else buildList {
+                        // Direct reads of the engine counters, no rule evaluated here.
+                        if (it.divergentFistNextTurn) add(PlayerEffect.DIVERGENT_FIST_NEXT_TURN)
+                        if (it.divergentFistActive && s.activeId == it.id) add(PlayerEffect.DIVERGENT_FIST_ACTIVE)
+                        if (it.infinityUsed) add(PlayerEffect.INFINITY_USED)
+                        if (it.specialGradeUsed) add(PlayerEffect.SPECIAL_GRADE_USED)
+                        if (it.has(TileId.CYBERCERVEAU) && !it.cyberBrainReady) add(PlayerEffect.CYBER_BRAIN_NEXT_TURN)
+                    },
                 )
             },
             humanId = human.id,
@@ -114,10 +168,12 @@ class GameViewModel(
             maxRolls = s.maxRolls,
             remainingGroups = if (s.phase == Phase.RESOLVING) engine.remainingGroups() else emptyList(),
             tokyoId = s.tokyoId,
-            market = s.market.map { MarketCardUi(it, engine.priceOf(human, it), GameCommand.BuyCard(human.id, it) in legal) },
+            market = s.market.map {
+                MarketCardUi(it, engine.priceOf(human, it), GameCommand.BuyCard(human.id, it) in legal, engine.purchaseBlock(human.id, it))
+            },
             deckTop = if (human.has(CardId.MAKI_GLASSES)) s.deck.firstOrNull() else null,
             deckTopPrice = s.deck.firstOrNull()?.let { engine.priceOf(human, it) } ?: 0,
-            hand = human.hand.toList(),
+            deckTopBlock = s.deck.firstOrNull()?.let { engine.purchaseBlock(human.id, it) },
             powers = human.powers.toList(),
             tiles = human.tiles.toList(),
             wickedness = human.wickedness,
@@ -135,6 +191,9 @@ class GameViewModel(
 
     private companion object {
         const val END_DELAY_MS = 1800L
+        const val BANNER_MS = 1600L
+        const val SHOWCASE_MS = 2200L
+        const val IMPACTS_MS = 1100L
         const val LOG_SIZE = 60
     }
 }
