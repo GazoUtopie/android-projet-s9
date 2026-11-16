@@ -214,8 +214,8 @@
     <string name="card_incantation_desc">Une fois par tour, vous pouvez dépenser 1 Énergie pour vous accorder un lancer supplémentaire.</string>
     <string name="card_divergent_fist_desc">Lors de votre prochain tour, lorsque vous infligez au moins 1 dégât à un monstre, ce monstre perd 1 Énergie (si possible).</string>
     <string name="card_boogie_woogie_desc">Échangez immédiatement votre place avec le joueur dans Tokyo : il en sort en gagnant 1 point et vous y entrez sans gagner le point d’entrée. Et inversement : depuis Tokyo, échangez avec un joueur à l’extérieur ; vous en sortez en gagnant 1 point.</string>
-    <string name="card_maki_glasses_desc">Vous pouvez regarder la première carte de la pioche à tout moment et l’acheter comme si elle était visible.</string>
-    <string name="card_blood_manipulation_desc">Sacrifiez 1 Cœur pour infliger 2 dégâts au joueur hors de Tokyo de votre choix. Impossible si vous n’avez qu’un seul Cœur.</string>
+    <string name="card_maki_glasses_desc">Vous pouvez regarder la première carte de la pioche à tout moment et l’acheter comme si elle était visible ; elle s’applique aussi immédiatement.</string>
+    <string name="card_blood_manipulation_desc">Sacrifiez 1 Cœur pour infliger 2 dégâts au joueur hors de Tokyo de votre choix. Ne peut pas être acheté si vous n’avez qu’un seul Cœur ou si aucun joueur n’est hors de Tokyo.</string>
     <string name="card_talisman_desc">Défaussez les cartes visibles, révélez-en 3 nouvelles et gagnez immédiatement 1 Énergie.</string>
 
     <!-- Wickedness tiles (docs/KOT_WICKEDNESS.md) -->
