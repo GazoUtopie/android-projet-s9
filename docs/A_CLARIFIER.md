@@ -29,7 +29,7 @@ Points relevés dans `Rules-Cards`, la photo initiale des tuiles Wickedness (sup
 
 ## Points encore ouverts
 
-La base du moteur peut être développée. Les décisions ci-dessous restent à confirmer avant de considérer toutes les règles comme figées.
+Les décisions ci-dessous sont appliquées dans le moteur ; elles restent révisables par l’équipe.
 
 - [x] **Moharaga’s adaptation** : à l’achat, le maximum passe d’abord à 12, puis le joueur récupère 2 Cœurs (9/10 devient 11/12). Remplace l’ancienne convention (soin plafonné à l’achat, maximum à l’activation).
 - [x] **Recyclage des Actions** : une Action est défaussée après sa résolution (à l’achat) ; la défausse est remélangée quand la pioche est vide, et le marché est aussitôt complété. L’effet différé de Divergent Fist est suivi indépendamment de la carte.
@@ -55,14 +55,14 @@ Pour avancer, utiliser provisoirement les nombres déjà présents dans les cart
 | Nanami's overtime | Déclenché si aucune face Griffe n'apparaît sur les dés au moment où le joueur valide son dernier lancer (décision confirmée ci-dessous). |
 | Fuite | Seulement après des dégâts effectifs de Griffes, conformément au livret. |
 
-Les points ci-dessous sont conservés pour la révision ultérieure, sans bloquer le développement :
+Les points ci-dessous, ouverts au départ, sont tranchés par les conventions du tableau et appliqués dans le moteur (`DamageCalculator`, `GameEngine.applyDamage`, `RulesConfig`) ; un changement d’avis ne demande qu’un réglage :
 
-- [ ] **Ordre des modificateurs** : définir l'ordre entre Rayon antimatière (double les faces Griffe), bonus de Domain Expension / Binding Vow, seuil de Veil, réduction de Special Grade et annulation d'Infinity. Préciser si les bonus de dégâts concernent uniquement les Griffes ou aussi les dégâts de cartes, et s'ils exigent au moins une Griffe.
-- [ ] **Domain Expension** : préciser si l'ignorance des protections sur trois Griffes s'applique seulement depuis Tokyo ou partout, si elle bloque Infinity, et si elle concerne uniquement l'attaque issue des dés.
-- [ ] **Special Grade** : préciser si la réduction se déclenche sur une attaque entièrement annulée, si une attaque réduite à zéro consomme l'utilisation, et si les pertes de PV volontaires ou obligatoires sont concernées.
+- [x] **Ordre des modificateurs** : Griffes (Cybercerveau compris) × Rayon antimatière, puis +1 Domain Expension (depuis Tokyo) et +2 Binding Vow ; ensuite, par cible : Infinity (annulation), Veil (−1 si au moins 3), Special Grade (−2). Les bonus offensifs ne concernent que l’attaque de dés avec au moins une Griffe, pas les dégâts de cartes.
+- [x] **Domain Expension** : l’ignorance des protections s’applique seulement depuis Tokyo, avec au moins trois faces Griffe finales, à l’attaque de dés uniquement ; elle bloque aussi Infinity.
+- [x] **Special Grade** : une attaque annulée par Infinity ne le consomme pas ; une attaque réduite à zéro le consomme ; les pertes de PV qui ne sont pas des dégâts (Blood Manipulation, Sukuna’s finger) ne le déclenchent pas. Il se recharge au début du tour de son propriétaire.
 - [x] **Nanami's overtime** : nouveau texte « Si vous ne possédez aucune face Griffe lors de votre dernier lancer ». La condition porte sur les faces des dés au moment où le joueur valide ses dés, pas sur la résolution : des Griffes sans cible ou une attaque annulée privent donc du bonus, et des dégâts de cartes ne comptent pas. Convention : 10 Shadows utilisé avant la validation compte (la face affichée est une Griffe) ; utilisé après la validation, pendant la résolution, il ne retire pas le bonus. Cybercerveau n'ajoute aucune face et ne change rien.
-- [ ] **Violet** : préciser les répartitions autorisées des trois dégâts depuis Tokyo et l'application des protections par cible.
-- [ ] **Blessure ou perte de PV** : distinguer les dégâts de Griffes des dégâts de cartes et des coûts en PV. Le livret ne permet la fuite de Tokyo qu'après blessure par les Griffes ; décider explicitement de toute exception personnalisée.
+- [x] **Violet** : hors de Tokyo, 2 dégâts à un adversaire au choix ; depuis Tokyo, toutes les répartitions entières des 3 dégâts entre les adversaires sont proposées (zéro autorisé) ; les protections s’appliquent par cible.
+- [x] **Blessure ou perte de PV** : seuls des dégâts de Griffes effectifs permettent de fuir Tokyo ; les dégâts de cartes déclenchent les protections mais pas la fuite ; les coûts en PV ne déclenchent ni l’un ni l’autre. Aucune exception personnalisée.
 
 ## Conventions retenues dans l’implémentation
 

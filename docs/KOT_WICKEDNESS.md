@@ -1,6 +1,6 @@
 # King of Tokyo — Wickedness et référence back-end
 
-Document pour Nadir Koudri, chargé du back-end et de la logique de jeu de The Culling Games. Aucun changement du front ni du moteur n'est réalisé ici.
+Document pour Nadir Koudri, chargé du back-end et de la logique de jeu de The Culling Games. Ce document décrit les règles ; leur implémentation est dans `GameEngine` (voir le README).
 
 ## Sources et périmètre
 
@@ -55,7 +55,7 @@ Référence : livret fourni, pages 4 à 8. Il s'agit de la base documentaire, av
 | Départ | 10 PV, 0 point de victoire ; Tokyo vide ; marché de trois cartes Énergie visibles. |
 | Premier joueur | Chaque joueur lance les six dés ; celui ayant le plus de Griffes commence ; les joueurs à égalité relancent. |
 | Tour | Lancer les dés → résoudre les dés → entrer dans Tokyo → acheter des cartes → finir son tour. Les effets de début de tour précèdent les lancers. |
-| Lancers | Six dés de base ; trois lancers maximum, soit un premier lancer et deux relances. Il est possible de conserver des dés, puis de les reprendre lors d'une relance ultérieure. |
+| Lancers | Six dés de base ; trois lancers maximum, soit un premier lancer et deux relances. Il est possible de conserver des dés, puis de les reprendre lors d'une relance ultérieure. Variante de l’application : après chaque lancer tous les dés sont gardés et l’on touche ceux à relancer. |
 | Résolution | Tous les dés sont résolus, dans l'ordre choisi par le joueur. Le moteur doit permettre cet ordre, qui peut influer sur les effets et les éliminations. |
 | Chiffres | Un triple de valeur n rapporte n points de victoire ; chaque dé de même valeur au-delà des trois premiers ajoute un point. |
 | Énergie | Chaque face Énergie rapporte une unité conservée jusqu'à utilisation. |
@@ -63,7 +63,7 @@ Référence : livret fourni, pages 4 à 8. Il s'agit de la base documentaire, av
 | Soin | Chaque face Cœur soigne d'un PV hors Tokyo, dans la limite du maximum. Les dés ne soignent pas dans Tokyo ; cartes et tuiles peuvent soigner dans Tokyo. |
 | Tokyo | Entrée obligatoire si vide pendant la phase correspondante. Partie commencée à trois ou quatre : +1 point de victoire à l’entrée, +2 au début du tour dans Tokyo. Partie commencée à deux : +1 Énergie à chacun de ces moments, à la place des points. |
 | Fuite | Un occupant blessé par les Griffes peut choisir de sortir après avoir subi les dégâts. Les pertes de PV causées par une carte ne permettent pas cette fuite selon le livret. |
-| Achats | Une ou plusieurs cartes achetables si l'Énergie suffit ; chaque achat révèle immédiatement une carte de remplacement. Dépenser 2 Énergies permet de renouveler les trois cartes visibles. |
+| Achats | Une ou plusieurs cartes achetables si l'Énergie suffit (variante : chaque carte s’utilise dès l’achat) ; chaque achat révèle immédiatement une carte de remplacement. Dépenser 2 Énergies permet de renouveler les trois cartes visibles. |
 | Types | Variante : toute carte s’utilise dès l’achat. Pouvoir : actif dès l’achat et pour toute la partie. Action : résolue immédiatement à l’achat puis défaussée ; non achetable si sa condition n’est pas remplie. |
 | Élimination | À zéro PV, le monstre est éliminé et ses cartes Pouvoir, tuiles et Énergies sont défaussées. |
 | Victoire | Variante : immédiate. Dès qu’un monstre vivant atteint 20 points de victoire, à n’importe quel moment, ou qu’il est le dernier survivant, il gagne et la partie s’arrête. Un monstre mort ne gagne pas ; l’élimination du joueur humain est une défaite immédiate. |
@@ -90,7 +90,7 @@ Les noms ci-dessous conservent l'orthographe de `Rules-Cards`. Ce tableau résum
 | 3 | 10 Shadows | Pouvoir | Une fois par tour, transformer une face 1 ou 2 en Griffe. |
 | 3 | Sukuna's finger | Pouvoir | Début de chaque tour : +1 point de victoire et perte obligatoire de 1 PV, potentiellement mortelle. |
 | 3 | Overflowing Energy | Action | Soin immédiat de 3 PV. |
-| 3 | Incantation | Pouvoir | Une fois par tour, payer 1 Énergie pour une troisième relance. |
+| 3 | Incantation | Pouvoir | Une fois par tour, payer 1 Énergie pour un lancer supplémentaire (cinq lancers maximum avec Sournois), à partir du tour suivant l’achat. |
 | 2 | Divergent Fist | Action | Au prochain tour, une cible recevant au moins un dégât perd 1 Énergie si possible. |
 | 2 | Boogie Woogie | Action | Échange de place avec un occupant de Tokyo, et inversement ; sortie récompensée de 1 point, entrée sans point. |
 | 2 | Maki's glasses | Pouvoir | Consulter la première carte de la pioche et l'acheter comme une carte visible. |
@@ -110,7 +110,7 @@ Cette organisation est implémentée dans `TheCullingGames/app/src/main/java/fr/
 - **Choix explicites** : dés à relancer, ordre de résolution, tuile à prendre, cible, répartition de dégâts, activation d'Infinity et décision de fuite. Les IA doivent pouvoir répondre à ces mêmes choix.
 - **Aléatoire injectable** : rendre les lancers et la pioche reproductibles pour vérifier les règles.
 
-Les futurs tests métier devront couvrir les seuils franchis et épuisés, la résolution de plusieurs effets, les limites de soin, les réductions par cible, les actions différées, les éliminations et la victoire en fin de tour. Les arbitrages nécessaires avant ces implémentations sont dans `A_CLARIFIER.md`.
+Les tests métier (`GameEngineTest`, `AiSimulationTest`) couvrent les seuils franchis et épuisés, la résolution de plusieurs effets, les limites de soin, les réductions par cible, les actions différées, les achats impossibles, les éliminations et la victoire immédiate. Les conventions retenues sont dans `A_CLARIFIER.md`.
 
 ## Dégâts : conventions provisoires
 

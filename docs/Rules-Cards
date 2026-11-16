@@ -2,6 +2,8 @@
  
 thème : culling games de jujutsu kaisen
 
+Utilisation : chaque carte s'utilise dès son achat (pas de main). Un Pouvoir est actif tout de suite et pour toute la partie ; une Action s'applique immédiatement (cible choisie à l'achat) puis est défaussée. Une Action dont la condition n'est pas remplie ne peut pas être achetée.
+
 
 
 Cartes à 5 Énergies  
@@ -9,17 +11,17 @@ Cartes à 5 Énergies
  
  - Infinity (Pouvoir) : Une fois par tour de table, lorsqu'un monstre vous inflige des dégâts, vous pouvez dépenser 2 Énergie pour annuler entièrement cette attaque (les dégâts sont réduits à 0).
  
- - Reversed Cursed Technique (Action) : Vous récupérez immédiatement 4 Cœurs. Exceptionnellement, cette carte peut être utilisée pour vous soigner même si vous vous trouvez dans Tokyo.  
+ - Reversed Cursed Technique (Action) : Vous récupérez immédiatement 4 Cœurs. Cette carte peut être utilisée même si vous êtes dans Tokyo.  
  
  - Binding Vow (Pouvoir) : Vous ne pouvez plus gagner de Cœurs grâce à vos dés (les effets de cartes fonctionnent toujours). En contrepartie, vous infligez +2 dégâts.
     
- - Moharaga's adaptation (Pouvoir) : Votre jauge de santé maximale passe à 12 Cœurs (au lieu de 10). Gagnez immédiatement 2 Cœurs à l'achat de cette carte.  
+ - Moharaga's adaptation (Pouvoir) : Votre santé maximale passe à 12 Cœurs (au lieu de 10). Gagnez immédiatement 2 Cœurs à l'achat de cette carte (le maximum passe d'abord à 12, puis le soin s'applique : 9/10 devient 11/12).  
  
 Cartes à 4 Énergies  
  
  - Special Grade (Pouvoir) : La première fois que vous subissez des dégâts à chaque tour de table, réduisez ces dégâts de 2.  
  
- - Black Flash (Action) : Jouez cette carte après avoir résolu vos dés. Si vous avez obtenu un brelan de 1, 2 ou 3, infligez immédiatement 2 dégâts supplémentaires à vos adversaires.
+ - Black Flash (Action) : Achetable seulement si vous avez résolu un brelan de 1, 2 ou 3 ce tour-ci : infligez immédiatement 2 dégâts à chacun de vos adversaires.
 
  - Violet (Action) : Infligez 2 dégâts ciblés au monstre de votre choix. Si vous êtes dans Tokyo, vous pouvez répartir 3 dégâts comme vous le souhaitez les joueurs à l'extérieur.  
 
@@ -29,7 +31,7 @@ Cartes à 4 Énergies
  
 Cartes à 3 Énergies  
  
-  - Nanami's overtime (Pouvoir) : Si à la fin de votre tour vous n'avez infligé aucun dégât (aucune face Griffe résolue), vous gagnez 1 Énergie et 1 Étoile.  
+  - Nanami's overtime (Pouvoir) : Si vous ne possédez aucune face Griffe lors de votre dernier lancer, vous gagnez 1 Énergie et 1 Étoile à la fin de votre tour.  
  
   - 10 Shadows (Pouvoir) : Une fois par tour, vous pouvez transformer un dé affichant un "1" ou un "2" en une face Griffe.  
  
@@ -37,17 +39,17 @@ Cartes à 3 Énergies
  
   - Overflowing Energy (Action) : Récupérez immédiatement 3 Coeurs. 
  
-  - Incantation (Pouvoir) : Une fois par tour, vous pouvez dépenser 1 Énergie pour vous accorder une troisième relance de dés.  
+  - Incantation (Pouvoir) : Une fois par tour, vous pouvez dépenser 1 Énergie pour vous accorder un lancer supplémentaire (cinq lancers au maximum avec Sournois). Utilisable à partir du tour suivant l'achat.  
  
 Cartes à 2 Énergies  
  
   - Divergent Fist (Action) : Lors de votre prochain tour, lorsque que vous infligez au moins 1 dégât à un monstre, ce monstre perd 1 Énergie (si possible).  
  
-  - Boogie Woogie (Action) : Échangez immédiatement votre place avec un joueur dans Tokyo, il en sort (en obtenant 1 point) et vous y entrez (sans gagner le point de victoire d'entrée), et inversement. 
+  - Boogie Woogie (Action) : Échangez immédiatement votre place avec un joueur dans Tokyo, il en sort (en obtenant 1 point) et vous y entrez (sans gagner le point de victoire d'entrée), et inversement : si vous êtes dans Tokyo, échangez avec un joueur à l'extérieur, vous en sortez en gagnant 1 point. Inutilisable si Tokyo est vide. 
  
-  - Maki's glasses (Pouvoir) : Vous pouvez regarder la première carte de la pioche à tout moment et l'acheter comme si elle était visible.
+  - Maki's glasses (Pouvoir) : Vous pouvez regarder la première carte de la pioche à tout moment et l'acheter comme si elle était visible ; elle s'applique aussi immédiatement.
 
-  - Blood Manipulation (Action) : Sacrifiez 1 Cœur pour infliger 2 dégâts ciblés au joueur (hors Tokyo) de votre choix. Ne peut pas être utilisé si vous n'avez qu'un seul Cœur.  
+  - Blood Manipulation (Action) : Sacrifiez 1 Cœur pour infliger 2 dégâts ciblés au joueur (hors Tokyo) de votre choix. Ne peut pas être acheté si vous n'avez qu'un seul Cœur ou si aucun joueur n'est hors de Tokyo.  
  
   - Talisman (Action) : Défaussez toutes les cartes visibles sur la table, révélez-en 3 nouvelles, et gagnez immédiatement 1 Énergie.
  

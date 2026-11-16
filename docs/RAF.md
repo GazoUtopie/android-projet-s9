@@ -88,7 +88,7 @@ Pour le plan back, Nadir prend en charge l’ensemble des couches Business et Da
 - [x] Documenter les conventions retenues lorsque l’implémentation nécessite un choix provisoire.
 - [ ] Jouer des parties complètes pour vérifier durées, rythme, puissance des cartes et comportement des IA. *Simulation IA contre IA : environ 8 à 9 tours par joueur, toutes les cartes achetées régulièrement ; parties humaines à faire.*
 - [ ] Ajuster ensuite les dégâts et interactions, sans bloquer la première version jouable.
-- [ ] Mettre à jour les descriptions affichées et les documents après chaque règle validée.
+- [x] Mettre à jour les descriptions affichées et les documents après chaque règle validée.
 
 ## 8. Intégration, tests et livraison — toute l’équipe
 
@@ -114,7 +114,7 @@ Pour le plan back, Nadir prend en charge l’ensemble des couches Business et Da
 - [x] Cartes et tuiles : carte ou tuile affichée en grand puis envoyée vers les joueurs touchés ; appui long sur une carte du marché, un Pouvoir ou une tuile pour voir son effet.
 - [x] Profil d’un joueur (appui sur son panneau) : jauge de Méchanceté, tuiles, Pouvoirs actifs, effets en cours.
 - [ ] Vérifier ces retours visuels sur appareil (durées, lisibilité pendant les tours des IA).
-- [ ] Mettre à jour `docs/Rules-Cards` (texte source) pour Nanami's overtime, Reversed Cursed Technique et l’utilisation des cartes à l’achat.
+- [x] Mettre à jour `docs/Rules-Cards` (texte source) pour Nanami's overtime, Reversed Cursed Technique, Black Flash, Mahoraga, Boogie Woogie, Incantation, Maki’s glasses, Blood Manipulation et l’utilisation des cartes à l’achat ; points ouverts d’`A_CLARIFIER.md` passés en décisions appliquées.
 
 ## Ordre de réalisation proposé
 
